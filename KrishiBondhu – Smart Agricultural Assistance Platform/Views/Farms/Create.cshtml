@@ -1,0 +1,152 @@
+﻿@model Farm
+
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+ViewData["Title"] = "Add Farm";
+}
+
+<style> .farm-form-page { padding: 38px 0 60px; } .farm-form-container { max-width: 850px; margin: auto; padding: 0 22px; } .farm-form-header { margin-bottom: 22px; } .farm-form-header h1 { margin: 0; color: #173d2b; font-size: 30px; font-weight: 750; letter-spacing: -0.6px; } .farm-form-header p { margin: 7px 0 0; color: #78857e; font-size: 12px; } .farm-form-card { background: rgba(255,255,255,0.96); border: 1px solid #dfe9e2; border-radius: 20px; overflow: hidden; box-shadow: 0 12px 30px rgba(31, 77, 52, 0.06); } .farm-form-top { background: linear-gradient(120deg, #103824, #176b45); padding: 25px 28px; color: white; } .farm-form-icon { width: 46px; height: 46px; border-radius: 13px; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 23px; margin-bottom: 13px; } .farm-form-top h2 { margin: 0; font-size: 19px; font-weight: 700; } .farm-form-top p { margin: 5px 0 0; color: rgba(255,255,255,0.70); font-size: 11px; } .farm-form-body { padding: 30px; } .farm-field { margin-bottom: 21px; } .farm-field label { display: block; margin-bottom: 7px; color: #355243; font-size: 11px; font-weight: 700; } .farm-input, .farm-select { width: 100%; border: 1px solid #d6e2da; border-radius: 9px; padding: 11px 13px; background: #fbfdfb; color: #334d40; font-size: 12px; outline: none; transition: 0.2s; } .farm-input:focus, .farm-select:focus { border-color: #4b9a6e; box-shadow: 0 0 0 3px rgba(75,154,110,0.10); background: white; } .farm-input::placeholder { color: #a2aaa5; } .farm-validation { display: block; margin-top: 5px; color: #b24b4b; font-size: 10px; } .farm-form-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 28px; padding-top: 21px; border-top: 1px solid #e8eee9; } .farm-btn { display: inline-flex; align-items: center; justify-content: center; padding: 10px 17px; border-radius: 9px; text-decoration: none; border: none; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; } .farm-btn-primary { background: #176b45; color: white; } .farm-btn-primary:hover { background: #125a3a; color: white; transform: translateY(-1px); } .farm-btn-secondary { background: #eef2ef; color: #52635a; } .farm-btn-secondary:hover { background: #e1e7e3; color: #35483d; } @@media (max-width: 600px) { .farm-form-page { padding-top: 24px; } .farm-form-container { padding: 0 14px; } .farm-form-header h1 { font-size: 26px; } .farm-form-body { padding: 22px; } .farm-form-actions { flex-direction: column-reverse; } .farm-btn { width: 100%; } } </style>
+
+<div class="farm-form-page">
+
+<div class="farm-form-container">
+
+    <div class="farm-form-header">
+
+        <h1>
+            Add New Farm
+        </h1>
+
+        <p>
+            Register a farm and connect it with a farmer.
+        </p>
+
+    </div>
+
+    <div class="farm-form-card">
+
+        <div class="farm-form-top">
+
+            <div class="farm-form-icon">
+                🚜
+            </div>
+
+            <h2>
+                Farm Information
+            </h2>
+
+            <p>
+                Enter the basic details of the agricultural farm.
+            </p>
+
+        </div>
+
+        <div class="farm-form-body">
+
+            <form asp-action="Create" method="post">
+
+                <div class="farm-field">
+
+                    <label asp-for="FarmName">
+                        Farm Name
+                    </label>
+
+                    <input asp-for="FarmName"
+                           class="farm-input"
+                           placeholder="Enter farm name" />
+
+                    <span asp-validation-for="FarmName"
+                          class="farm-validation">
+                    </span>
+
+                </div>
+
+                <div class="farm-field">
+
+                    <label asp-for="Location">
+                        Location
+                    </label>
+
+                    <input asp-for="Location"
+                           class="farm-input"
+                           placeholder="Enter farm location" />
+
+                    <span asp-validation-for="Location"
+                          class="farm-validation">
+                    </span>
+
+                </div>
+
+                <div class="farm-field">
+
+                    <label asp-for="Area">
+                        Area
+                    </label>
+
+                    <input asp-for="Area"
+                           class="farm-input"
+                           type="number"
+                           step="0.01"
+                           min="0"
+                           placeholder="Enter land area" />
+
+                    <span asp-validation-for="Area"
+                          class="farm-validation">
+                    </span>
+
+                </div>
+
+                <div class="farm-field">
+
+                    <label asp-for="FarmerId">
+                        Farmer
+                    </label>
+
+                    <select asp-for="FarmerId"
+                            class="farm-select"
+                            asp-items="@(ViewData["FarmerId"] as SelectList)">
+
+                        <option value="">
+                            -- Select Farmer --
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="FarmerId"
+                          class="farm-validation">
+                    </span>
+
+                </div>
+
+                <div class="farm-form-actions">
+
+                    <a asp-action="Index"
+                       class="farm-btn farm-btn-secondary">
+                        ← Cancel
+                    </a>
+
+                    <button type="submit"
+                            class="farm-btn farm-btn-primary">
+                        ✓ Save Farm
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+@section Scripts {
+
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+
+}

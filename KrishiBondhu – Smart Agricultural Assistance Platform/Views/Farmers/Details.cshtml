@@ -1,0 +1,334 @@
+
+@model Farmer
+
+@{
+    ViewData["Title"] = "Farmer Details";
+}
+
+<style>
+    .kb-details-page {
+        min-height: calc(100vh - 70px);
+        background: #f3f6f2;
+        padding: 38px 0 60px;
+    }
+
+    .kb-details-container {
+        max-width: 850px;
+        margin: auto;
+        padding: 0 22px;
+    }
+
+    .kb-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #607068;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+        .kb-back:hover {
+            color: #176b45;
+        }
+
+    .kb-details-card {
+        background: white;
+        border: 1px solid #e2e9e3;
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(30, 60, 45, 0.06);
+    }
+
+    .kb-details-header {
+        background: linear-gradient(135deg, #176b45, #238052);
+        padding: 30px 32px;
+        color: white;
+    }
+
+    .kb-profile {
+        display: flex;
+        align-items: center;
+        gap: 17px;
+    }
+
+    .kb-profile-icon {
+        width: 62px;
+        height: 62px;
+        border-radius: 17px;
+        background: rgba(255,255,255,0.16);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 31px;
+    }
+
+    .kb-details-header h1 {
+        margin: 0;
+        font-size: 26px;
+        font-weight: 750;
+    }
+
+    .kb-details-header p {
+        margin: 5px 0 0;
+        font-size: 13px;
+        color: rgba(255,255,255,0.82);
+    }
+
+    .kb-details-body {
+        padding: 30px 32px;
+    }
+
+    .kb-section-title {
+        margin-bottom: 18px;
+        color: #294638;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .kb-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+    }
+
+    .kb-info-item {
+        background: #f8faf8;
+        border: 1px solid #e7ece8;
+        border-radius: 12px;
+        padding: 16px;
+    }
+
+    .kb-info-label {
+        color: #7a8780;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 7px;
+    }
+
+    .kb-info-value {
+        color: #30483b;
+        font-size: 14px;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    .kb-actions {
+        display: flex;
+        gap: 10px;
+        padding-top: 25px;
+        margin-top: 25px;
+        border-top: 1px solid #edf1ee;
+    }
+
+    .kb-edit-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        background: #176b45;
+        color: white;
+        padding: 11px 21px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 650;
+        transition: 0.2s;
+    }
+
+        .kb-edit-btn:hover {
+            background: #125637;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+    .kb-list-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        background: #f0f3f1;
+        color: #59675f;
+        padding: 10px 19px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 650;
+        transition: 0.2s;
+    }
+
+        .kb-list-btn:hover {
+            background: #e4e9e5;
+            color: #3d4b43;
+        }
+
+    @@media (max-width: 650px) {
+
+        .kb-details-page {
+            padding-top: 24px;
+        }
+
+        .kb-details-container {
+            padding: 0 14px;
+        }
+
+        .kb-details-header {
+            padding: 24px;
+        }
+
+        .kb-details-body {
+            padding: 23px;
+        }
+
+        .kb-profile-icon {
+            width: 52px;
+            height: 52px;
+            font-size: 26px;
+        }
+
+        .kb-details-header h1 {
+            font-size: 22px;
+        }
+
+        .kb-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .kb-actions {
+            flex-direction: column;
+        }
+
+        .kb-edit-btn,
+        .kb-list-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="kb-details-page">
+
+    <div class="kb-details-container">
+
+        <a asp-action="Index" class="kb-back">
+            ← Back to Farmers
+        </a>
+
+        <div class="kb-details-card">
+
+            <!-- HEADER -->
+
+            <div class="kb-details-header">
+
+                <div class="kb-profile">
+
+                    <div class="kb-profile-icon">
+                        👨‍🌾
+                    </div>
+
+                    <div>
+
+                        <h1>
+                            @Model.Name
+                        </h1>
+
+                        <p>
+                            Farmer Profile & Information
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DETAILS -->
+
+            <div class="kb-details-body">
+
+                <div class="kb-section-title">
+                    Farmer Information
+                </div>
+
+                <div class="kb-info-grid">
+
+                    <div class="kb-info-item">
+
+                        <div class="kb-info-label">
+                            Farmer Name
+                        </div>
+
+                        <div class="kb-info-value">
+                            @Model.Name
+                        </div>
+
+                    </div>
+
+
+                    <div class="kb-info-item">
+
+                        <div class="kb-info-label">
+                            Phone Number
+                        </div>
+
+                        <div class="kb-info-value">
+                            @Model.Phone
+                        </div>
+
+                    </div>
+
+
+                    <div class="kb-info-item">
+
+                        <div class="kb-info-label">
+                            Address
+                        </div>
+
+                        <div class="kb-info-value">
+                            @Model.Address
+                        </div>
+
+                    </div>
+
+
+                    <div class="kb-info-item">
+
+                        <div class="kb-info-label">
+                            Email Address
+                        </div>
+
+                        <div class="kb-info-value">
+                            @Model.Email
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="kb-actions">
+
+                    <a asp-action="Edit"
+                       asp-route-id="@Model?.FarmerId"
+                       class="kb-edit-btn">
+                        ✏ Edit Farmer
+                    </a>
+
+                    <a asp-action="Index"
+                       class="kb-list-btn">
+                        ← Back to List
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```

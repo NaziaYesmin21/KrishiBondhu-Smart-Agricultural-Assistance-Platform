@@ -1,0 +1,172 @@
+﻿@model IEnumerable<Cultivation>
+
+@{
+ViewData["Title"] = "Cultivations";
+}
+
+<div class="cultivation-page">
+
+<div class="page-header">
+
+    <div>
+        <span class="section-label">CULTIVATION MANAGEMENT</span>
+        <h1>🌾 Cultivation Records</h1>
+        <p>Track crop cultivation activities across registered farms.</p>
+    </div>
+
+    @if (Context.Session.GetString("Role") == "Admin")
+    {
+        <a asp-action="Create" class="add-btn">
+            + Add Cultivation
+        </a>
+    }
+
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-card">
+
+        <div class="empty-icon">
+            🌱
+        </div>
+
+        <h2>No Cultivation Records Yet</h2>
+
+        <p>
+            Start by adding a cultivation record for a registered
+            farm and crop.
+        </p>
+
+        @if (Context.Session.GetString("Role") == "Admin")
+        {
+            <a asp-action="Create" class="empty-btn">
+                + Add First Cultivation
+            </a>
+        }
+
+    </div>
+}
+else
+{
+    <div class="table-card">
+
+        <div class="table-top">
+
+            <div>
+                <h2>🌿 Cultivation Directory</h2>
+                <span>
+                    @Model.Count() registered cultivation record(s)
+                </span>
+            </div>
+
+        </div>
+
+        <div class="table-wrapper">
+
+            <table class="cultivation-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Farm</th>
+                        <th>Crop</th>
+                        <th>Planting Date</th>
+                        <th>Harvest Date</th>
+                        <th>Yield</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                <span class="id-badge">
+                                    #@item.CultivationId
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="farm-name">
+                                    🏡 @item.Farm?.FarmName
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="crop-badge">
+                                    🌱 @item.Crop?.CropName
+                                </span>
+                            </td>
+
+                            <td>
+                                @item.PlantingDate.ToString("dd MMM yyyy")
+                            </td>
+
+                            <td>
+                                @if (item.HarvestDate.HasValue)
+                                {
+                                    @item.HarvestDate.Value.ToString("dd MMM yyyy")
+                                }
+                                else
+                                {
+                                    <span class="not-harvested">
+                                        Not harvested
+                                    </span>
+                                }
+                            </td>
+
+                            <td>
+                                <strong class="yield-value">
+                                    @item.Yield.ToString("0.##")
+                                </strong>
+                                <span class="yield-unit">units</span>
+                            </td>
+
+                            <td>
+
+                                <div class="action-buttons">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.CultivationId"
+                                       class="details-btn">
+                                        Details
+                                    </a>
+
+                                    @if (Context.Session.GetString("Role") == "Admin")
+                                    {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.CultivationId"
+                                           class="edit-btn">
+                                            Edit
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.CultivationId"
+                                           class="delete-btn">
+                                            Delete
+                                        </a>
+                                    }
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+}
+
+</div>
+
+<style> .cultivation-page { max-width: 1250px; margin: 0 auto; padding: 20px 10px 50px; } .page-header { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 28px; } .section-label { color: #6b8e23; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; } .page-header h1 { margin: 5px 0 6px; color: #164a2c; font-size: 32px; font-weight: 700; } .page-header p { margin: 0; color: #6b7c72; font-size: 15px; } .add-btn { background: #164a2c; color: white; text-decoration: none; padding: 12px 19px; border-radius: 10px; font-weight: 600; white-space: nowrap; transition: 0.2s; } .add-btn:hover { background: #0f3921; color: white; } .table-card { background: white; border: 1px solid #e0eae2; border-radius: 18px; box-shadow: 0 8px 25px rgba(30, 75, 45, 0.07); overflow: hidden; } .table-top { padding: 22px 24px; border-bottom: 1px solid #e5ece6; background: #fbfdfb; } .table-top h2 { margin: 0 0 4px; color: #214832; font-size: 19px; } .table-top span { color: #7a887f; font-size: 13px; } .table-wrapper { overflow-x: auto; } .cultivation-table { width: 100%; border-collapse: collapse; min-width: 950px; } .cultivation-table th { background: #eef6ef; color: #31563d; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; padding: 14px 16px; text-align: left; white-space: nowrap; } .cultivation-table td { padding: 16px; border-bottom: 1px solid #edf1ed; color: #526259; font-size: 13px; vertical-align: middle; } .cultivation-table tbody tr:hover { background: #fafdfb; } .id-badge { display: inline-block; background: #edf5ee; color: #356047; padding: 5px 9px; border-radius: 7px; font-weight: 600; font-size: 12px; } .farm-name { color: #294c35; font-weight: 600; } .crop-badge { display: inline-block; background: #eaf5e8; color: #356c3d; padding: 6px 10px; border-radius: 8px; font-weight: 600; } .not-harvested { color: #a27a28; font-style: italic; font-size: 12px; } .yield-value { color: #214832; font-size: 14px; } .yield-unit { color: #839087; font-size: 11px; margin-left: 2px; } .action-buttons { display: flex; gap: 6px; flex-wrap: wrap; } .action-buttons a { text-decoration: none; padding: 6px 9px; border-radius: 7px; font-size: 11px; font-weight: 600; transition: 0.2s; } .details-btn { background: #edf3ee; color: #356047; } .details-btn:hover { background: #dce9df; color: #214832; } .edit-btn { background: #eef4e8; color: #5d792d; } .edit-btn:hover { background: #dfead5; color: #4c6822; } .delete-btn { background: #fff0f0; color: #a33a3a; } .delete-btn:hover { background: #f9dede; color: #8e3030; } .empty-card { background: white; border: 1px solid #e0eae2; border-radius: 20px; padding: 60px 25px; text-align: center; box-shadow: 0 8px 25px rgba(30, 75, 45, 0.07); } .empty-icon { width: 76px; height: 76px; margin: 0 auto 18px; border-radius: 50%; background: #eaf5e8; display: flex; align-items: center; justify-content: center; font-size: 36px; } .empty-card h2 { margin: 0 0 8px; color: #214832; font-size: 22px; } .empty-card p { max-width: 500px; margin: 0 auto 24px; color: #718078; font-size: 14px; line-height: 1.6; } .empty-btn { display: inline-block; background: #164a2c; color: white; text-decoration: none; padding: 11px 18px; border-radius: 9px; font-weight: 600; } .empty-btn:hover { background: #0f3921; color: white; } @@media (max-width: 700px) { .page-header { flex-direction: column; align-items: flex-start; } .page-header h1 { font-size: 27px; } .add-btn { width: 100%; text-align: center; box-sizing: border-box; } } </style>

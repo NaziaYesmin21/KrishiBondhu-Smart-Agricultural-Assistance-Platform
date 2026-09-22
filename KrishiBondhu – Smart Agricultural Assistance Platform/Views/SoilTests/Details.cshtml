@@ -1,0 +1,593 @@
+﻿
+@model SoilTest
+
+@{
+    ViewData["Title"] = "Soil Test Details";
+}
+
+<div class="container py-5">
+
+    <!-- =========================
+         PAGE HEADER
+    ========================== -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+        <div>
+            <h2 class="fw-bold mb-1" style="color:#174A32;">
+                <i class="bi bi-clipboard2-pulse me-2"></i>
+                Soil Test Details
+            </h2>
+
+            <p class="text-muted mb-0">
+                View detailed soil analysis information
+            </p>
+        </div>
+
+        <a asp-action="Index"
+           class="btn btn-outline-success px-4">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Soil Tests
+
+        </a>
+
+    </div>
+
+
+    <!-- =========================
+         MAIN CARD
+    ========================== -->
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+
+        <!-- =========================
+             CARD HEADER
+        ========================== -->
+
+        <div class="soil-header p-4">
+
+            <div class="d-flex align-items-center">
+
+                <div class="soil-header-icon me-3">
+
+                    <i class="bi bi-moisture"></i>
+
+                </div>
+
+                <div>
+
+                    <h4 class="mb-1 fw-bold">
+                        Soil Analysis Report
+                    </h4>
+
+                    <small>
+                        Soil Test ID: @Model.SoilTestId
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             CARD BODY
+        ========================== -->
+
+        <div class="card-body p-4">
+
+            <div class="row g-4">
+
+
+                <!-- =========================
+                     FARM
+                ========================== -->
+
+                <div class="col-md-6">
+
+                    <div class="info-box">
+
+                        <div class="icon-box">
+
+                            <i class="bi bi-house-door"></i>
+
+                        </div>
+
+                        <div>
+
+                            <small class="text-muted d-block">
+                                Farm
+                            </small>
+
+                            <h5 class="fw-semibold mb-0">
+
+                                @(Model.Farm?.FarmName ?? "Not Available")
+
+                            </h5>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     TEST DATE
+                ========================== -->
+
+                <div class="col-md-6">
+
+                    <div class="info-box">
+
+                        <div class="icon-box">
+
+                            <i class="bi bi-calendar3"></i>
+
+                        </div>
+
+                        <div>
+
+                            <small class="text-muted d-block">
+                                Test Date
+                            </small>
+
+                            <h5 class="fw-semibold mb-0">
+
+                                @Model.TestDate.ToString("dd MMMM yyyy")
+
+                            </h5>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     SOIL PH
+                ========================== -->
+
+                <div class="col-12">
+
+                    <div class="metric-card">
+
+                        <div class="metric-icon">
+
+                            <i class="bi bi-droplet-half"></i>
+
+                        </div>
+
+                        <div>
+
+                            <small class="text-muted d-block">
+                                Soil pH
+                            </small>
+
+                            <h3 class="fw-bold mb-0"
+                                style="color:#174A32;">
+
+                                @Model.PH
+
+                            </h3>
+
+                            <small class="text-muted">
+                                pH level
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     NUTRIENT SECTION TITLE
+                ========================== -->
+
+                <div class="col-12">
+
+                    <div class="section-title">
+
+                        <i class="bi bi-bar-chart-fill me-2"></i>
+                        Soil Nutrient Analysis
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     NITROGEN
+                ========================== -->
+
+                <div class="col-md-4">
+
+                    <div class="nutrient-card">
+
+                        <div class="nutrient-icon">
+
+                            <i class="bi bi-flower1"></i>
+
+                        </div>
+
+                        <small class="text-muted d-block">
+                            Nitrogen
+                        </small>
+
+                        <h3 class="fw-bold mb-0"
+                            style="color:#174A32;">
+
+                            @Model.Nitrogen
+
+                        </h3>
+
+                        <small class="text-muted">
+                            mg/kg
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     PHOSPHORUS
+                ========================== -->
+
+                <div class="col-md-4">
+
+                    <div class="nutrient-card">
+
+                        <div class="nutrient-icon">
+
+                            <i class="bi bi-tree"></i>
+
+                        </div>
+
+                        <small class="text-muted d-block">
+                            Phosphorus
+                        </small>
+
+                        <h3 class="fw-bold mb-0"
+                            style="color:#174A32;">
+
+                            @Model.Phosphorus
+
+                        </h3>
+
+                        <small class="text-muted">
+                            mg/kg
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =========================
+                     POTASSIUM
+                ========================== -->
+
+                <div class="col-md-4">
+
+                    <div class="nutrient-card">
+
+                        <div class="nutrient-icon">
+
+                            <i class="bi bi-lightning-charge"></i>
+
+                        </div>
+
+                        <small class="text-muted d-block">
+                            Potassium
+                        </small>
+
+                        <h3 class="fw-bold mb-0"
+                            style="color:#174A32;">
+
+                            @Model.Potassium
+
+                        </h3>
+
+                        <small class="text-muted">
+                            mg/kg
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 FOOTER ACTIONS
+            ========================== -->
+
+            <div class="border-top mt-4 pt-4 d-flex gap-2 flex-wrap">
+
+                @if (Context.Session.GetString("Role") == "Admin")
+                {
+
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.SoilTestId"
+                       class="btn btn-success px-4">
+
+                        <i class="bi bi-pencil-square me-1"></i>
+                        Edit Test
+
+                    </a>
+
+                }
+
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary px-4">
+
+                    <i class="bi bi-list-ul me-1"></i>
+                    All Soil Tests
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+/* =========================================
+   SOIL HEADER
+========================================= */
+
+.soil-header {
+    background: linear-gradient(
+        135deg,
+        #174A32,
+        #2E7D32
+    );
+
+    color: white;
+}
+
+
+.soil-header-icon {
+    width: 55px;
+    height: 55px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.15);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 27px;
+}
+
+
+/* =========================================
+   INFORMATION BOX
+========================================= */
+
+.info-box {
+    display: flex;
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 18px;
+
+    background: #f7fbf8;
+
+    border: 1px solid #e2eee5;
+
+    border-radius: 14px;
+
+    height: 100%;
+
+    transition: 0.2s ease;
+}
+
+
+.info-box:hover {
+    border-color: #c8dfce;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 15px rgba(23,74,50,0.06);
+}
+
+
+.icon-box {
+    width: 48px;
+    height: 48px;
+
+    flex-shrink: 0;
+
+    border-radius: 12px;
+
+    background: #e5f3e8;
+
+    color: #174A32;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+
+/* =========================================
+   PH CARD
+========================================= */
+
+.metric-card {
+    display: flex;
+    align-items: center;
+
+    gap: 18px;
+
+    padding: 22px;
+
+    background: #f7fbf8;
+
+    border: 1px solid #e2eee5;
+
+    border-radius: 14px;
+
+    transition: 0.2s ease;
+}
+
+
+.metric-card:hover {
+    border-color: #c8dfce;
+
+    box-shadow: 0 5px 15px rgba(23,74,50,0.06);
+}
+
+
+.metric-icon {
+    width: 58px;
+    height: 58px;
+
+    flex-shrink: 0;
+
+    border-radius: 14px;
+
+    background: #dff1e3;
+
+    color: #174A32;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 26px;
+}
+
+
+/* =========================================
+   SECTION TITLE
+========================================= */
+
+.section-title {
+    font-size: 14px;
+
+    font-weight: 700;
+
+    color: #174A32;
+
+    padding-bottom: 8px;
+
+    border-bottom: 1px solid #e2eee5;
+}
+
+
+/* =========================================
+   NUTRIENT CARDS
+========================================= */
+
+.nutrient-card {
+    text-align: center;
+
+    padding: 24px 15px;
+
+    background: #f7fbf8;
+
+    border: 1px solid #e2eee5;
+
+    border-radius: 14px;
+
+    height: 100%;
+
+    transition: 0.2s ease;
+}
+
+
+.nutrient-card:hover {
+    border-color: #bcd9c4;
+
+    transform: translateY(-3px);
+
+    box-shadow: 0 6px 18px rgba(23,74,50,0.08);
+}
+
+
+.nutrient-icon {
+    width: 50px;
+    height: 50px;
+
+    margin: 0 auto 10px;
+
+    border-radius: 50%;
+
+    background: #e5f3e8;
+
+    color: #174A32;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 22px;
+}
+
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.btn-success {
+    background-color: #174A32;
+
+    border-color: #174A32;
+}
+
+
+.btn-success:hover {
+    background-color: #0f3825;
+
+    border-color: #0f3825;
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@@media (max-width: 576px) {
+
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .soil-header {
+        padding: 20px !important;
+    }
+
+    .metric-card {
+        padding: 18px;
+    }
+
+    .nutrient-card {
+        padding: 20px 12px;
+    }
+
+}
+
+</style>
+```

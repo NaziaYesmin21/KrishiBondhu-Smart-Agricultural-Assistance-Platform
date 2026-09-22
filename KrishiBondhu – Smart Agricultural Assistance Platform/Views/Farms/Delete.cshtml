@@ -1,0 +1,73 @@
+﻿@model Farm
+
+@{
+ViewData["Title"] = "Delete Farm";
+}
+
+<div class="delete-page">
+
+<div class="delete-header">
+    <span class="delete-label">FARM MANAGEMENT</span>
+    <h1>🗑 Delete Farm</h1>
+    <p>Please review the farm information before deleting this record.</p>
+</div>
+
+<div class="delete-card">
+
+    <div class="warning-icon">
+        ⚠️
+    </div>
+
+    <h2>Are you sure you want to delete this farm?</h2>
+
+    <p class="warning-text">
+        This action will permanently remove the farm record from the database.
+    </p>
+
+    <div class="farm-summary">
+
+        <div class="summary-item">
+            <span>Farm Name</span>
+            <strong>@Model.FarmName</strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Location</span>
+            <strong>📍 @Model.Location</strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Land Area</span>
+            <strong>@Model.Area acres</strong>
+        </div>
+
+        <div class="summary-item">
+            <span>Farmer</span>
+            <strong>👨‍🌾 @(Model.Farmer?.Name ?? "Not Assigned")</strong>
+        </div>
+
+    </div>
+
+    <form asp-action="Delete" method="post">
+
+        <input type="hidden" asp-for="FarmId" />
+
+        <div class="delete-actions">
+
+            <a asp-action="Index" class="cancel-btn">
+                ← Cancel
+            </a>
+
+            <button type="submit" class="confirm-delete-btn">
+                🗑 Yes, Delete Farm
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+</div>
+
+<style> .delete-page { max-width: 850px; margin: 0 auto; padding: 25px 10px 50px; } .delete-header { margin-bottom: 28px; } .delete-label { color: #6b8e23; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; } .delete-header h1 { margin: 6px 0; color: #164a2c; font-size: 32px; font-weight: 700; } .delete-header p { margin: 0; color: #6b7c72; font-size: 15px; } .delete-card { background: white; border-radius: 20px; padding: 38px; text-align: center; border: 1px solid #f0dddd; box-shadow: 0 8px 25px rgba(90, 45, 45, 0.08); } .warning-icon { width: 72px; height: 72px; margin: 0 auto 20px; border-radius: 50%; background: #fff1e1; display: flex; align-items: center; justify-content: center; font-size: 34px; } .delete-card h2 { margin: 0 0 10px; color: #633838; font-size: 22px; } .warning-text { color: #7b6a6a; font-size: 14px; margin-bottom: 28px; } .farm-summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; text-align: left; margin-bottom: 30px; } .summary-item { background: #f8faf8; border: 1px solid #e4ece5; border-radius: 12px; padding: 16px; } .summary-item span { display: block; color: #77847c; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; } .summary-item strong { display: block; color: #214832; font-size: 15px; } .delete-actions { display: flex; justify-content: center; gap: 12px; padding-top: 25px; border-top: 1px solid #e8eeee; } .delete-actions a, .delete-actions button { border: none; text-decoration: none; padding: 12px 20px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; } .cancel-btn { background: #e8f1ea; color: #24613c; } .cancel-btn:hover { background: #d9e9dc; color: #164a2c; } .confirm-delete-btn { background: #a33a3a; color: white; } .confirm-delete-btn:hover { background: #872d2d; } @@media (max-width: 650px) { .delete-card { padding: 25px 18px; } .farm-summary { grid-template-columns: 1fr; } .delete-actions { flex-direction: column; } .delete-actions a, .delete-actions button { width: 100%; text-align: center; box-sizing: border-box; } } </style>

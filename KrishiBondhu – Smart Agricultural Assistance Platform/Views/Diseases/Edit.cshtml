@@ -1,0 +1,177 @@
+﻿@model Disease
+
+@{
+ViewData["Title"] = "Edit Disease";
+}
+
+<div class="container py-5">
+
+<div class="mb-4">
+    <small class="text-success fw-bold">
+        CROP HEALTH MANAGEMENT
+    </small>
+
+    <h2 class="fw-bold mt-1" style="color:#174A32;">
+        <i class="bi bi-pencil-square me-2"></i>
+        Edit Disease
+    </h2>
+
+    <p class="text-muted">
+        Update crop disease symptoms and treatment information.
+    </p>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4">
+
+    <div class="card-header text-white p-4"
+         style="background:linear-gradient(135deg,#174A32,#2E7D32);">
+
+        <h4 class="mb-1">
+            Disease Information
+        </h4>
+
+        <small>
+            Update the required information below
+        </small>
+
+    </div>
+
+    <div class="card-body p-4">
+
+        <form asp-action="Edit" method="post">
+
+            <input type="hidden" asp-for="DiseaseId" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3">
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+
+                    <label asp-for="CropId"
+                           class="form-label fw-semibold">
+
+                        <i class="bi bi-flower1 me-1"></i>
+                        Crop
+
+                    </label>
+
+                    <select asp-for="CropId"
+                            class="form-select"
+                            asp-items="@(ViewData["CropId"] as Microsoft.AspNetCore.Mvc.Rendering.SelectList)">
+
+                        <option value="">
+                            -- Select Crop --
+                        </option>
+
+                    </select>
+
+                    <span asp-validation-for="CropId"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label asp-for="DiseaseName"
+                           class="form-label fw-semibold">
+
+                        <i class="bi bi-virus2 me-1"></i>
+                        Disease Name
+
+                    </label>
+
+                    <input asp-for="DiseaseName"
+                           class="form-control"
+                           placeholder="Enter disease name" />
+
+                    <span asp-validation-for="DiseaseName"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="col-12">
+
+                    <label asp-for="Symptoms"
+                           class="form-label fw-semibold">
+
+                        <i class="bi bi-exclamation-circle me-1"></i>
+                        Symptoms
+
+                    </label>
+
+                    <textarea asp-for="Symptoms"
+                              class="form-control"
+                              rows="5"
+                              placeholder="Describe the common symptoms..."></textarea>
+
+                    <span asp-validation-for="Symptoms"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+                <div class="col-12">
+
+                    <label asp-for="Treatment"
+                           class="form-label fw-semibold">
+
+                        <i class="bi bi-shield-check me-1"></i>
+                        Treatment
+
+                    </label>
+
+                    <textarea asp-for="Treatment"
+                              class="form-control"
+                              rows="5"
+                              placeholder="Enter recommended treatment..."></textarea>
+
+                    <span asp-validation-for="Treatment"
+                          class="text-danger">
+                    </span>
+
+                </div>
+
+            </div>
+
+            <div class="border-top mt-4 pt-4">
+
+                <button type="submit"
+                        class="btn btn-success px-4">
+
+                    <i class="bi bi-check2-circle me-1"></i>
+                    Update Disease
+
+                </button>
+
+                <a asp-action="Index"
+                   class="btn btn-outline-secondary px-4 ms-2">
+
+                    <i class="bi bi-x-lg me-1"></i>
+                    Cancel
+
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</div>
+
+<style> .form-label { color: #294638; } .form-control, .form-select { border: 1px solid #d7e5da; border-radius: 10px; padding: 10px 12px; } .form-control:focus, .form-select:focus { border-color: #5b9b6d; box-shadow: 0 0 0 0.2rem rgba(45,138,89,0.12); } .btn-success { background-color: #174A32; border-color: #174A32; } .btn-success:hover { background-color: #0f3825; border-color: #0f3825; } </style>
+
+@section Scripts {
+
+@{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+
+}

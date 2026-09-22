@@ -1,0 +1,348 @@
+
+@model Farmer
+
+@{
+    ViewData["Title"] = "Delete Farmer";
+}
+
+<style>
+    .kb-delete-page {
+        min-height: calc(100vh - 70px);
+        background: #f3f6f2;
+        padding: 38px 0 60px;
+    }
+
+    .kb-delete-container {
+        max-width: 760px;
+        margin: auto;
+        padding: 0 22px;
+    }
+
+    .kb-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #607068;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+        .kb-back:hover {
+            color: #176b45;
+        }
+
+    .kb-delete-card {
+        background: white;
+        border: 1px solid #e2e9e3;
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(30, 60, 45, 0.06);
+    }
+
+    .kb-delete-header {
+        background: linear-gradient(135deg, #9d3f39, #c05249);
+        padding: 28px 32px;
+        color: white;
+    }
+
+    .kb-delete-header-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .kb-warning-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 15px;
+        background: rgba(255,255,255,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .kb-delete-header h1 {
+        margin: 0;
+        font-size: 25px;
+        font-weight: 750;
+    }
+
+    .kb-delete-header p {
+        margin: 5px 0 0;
+        font-size: 13px;
+        color: rgba(255,255,255,0.84);
+    }
+
+    .kb-delete-body {
+        padding: 30px 32px;
+    }
+
+    .kb-warning-box {
+        background: #fff7f6;
+        border: 1px solid #f1d8d5;
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 24px;
+        color: #93413b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .kb-section-title {
+        color: #294638;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 16px;
+    }
+
+    .kb-info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 13px;
+    }
+
+    .kb-info-item {
+        background: #f8faf8;
+        border: 1px solid #e7ece8;
+        border-radius: 11px;
+        padding: 15px;
+    }
+
+    .kb-info-label {
+        color: #7a8780;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+
+    .kb-info-value {
+        color: #30483b;
+        font-size: 14px;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    .kb-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-top: 25px;
+        margin-top: 25px;
+        border-top: 1px solid #edf1ee;
+    }
+
+    .kb-delete-btn {
+        border: none;
+        background: #c2413b;
+        color: white;
+        padding: 11px 22px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 650;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .kb-delete-btn:hover {
+            background: #a52f2a;
+            transform: translateY(-1px);
+        }
+
+    .kb-cancel-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        background: #f0f3f1;
+        color: #59675f;
+        padding: 10px 19px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 650;
+        transition: 0.2s;
+    }
+
+        .kb-cancel-btn:hover {
+            background: #e4e9e5;
+            color: #3d4b43;
+        }
+
+    @@media (max-width: 650px) {
+
+        .kb-delete-page {
+            padding-top: 24px;
+        }
+
+        .kb-delete-container {
+            padding: 0 14px;
+        }
+
+        .kb-delete-header {
+            padding: 23px;
+        }
+
+        .kb-delete-body {
+            padding: 23px;
+        }
+
+        .kb-delete-header h1 {
+            font-size: 22px;
+        }
+
+        .kb-info-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .kb-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .kb-delete-btn,
+        .kb-cancel-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="kb-delete-page">
+
+    <div class="kb-delete-container">
+
+        <a asp-action="Index" class="kb-back">
+            ← Back to Farmers
+        </a>
+
+        <div class="kb-delete-card">
+
+            <!-- HEADER -->
+
+            <div class="kb-delete-header">
+
+                <div class="kb-delete-header-content">
+
+                    <div class="kb-warning-icon">
+                        ⚠️
+                    </div>
+
+                    <div>
+                        <h1>Delete Farmer</h1>
+
+                        <p>
+                            Please confirm before permanently removing this record.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- BODY -->
+
+            <div class="kb-delete-body">
+
+                <div class="kb-warning-box">
+                    <strong>Warning:</strong>
+                    This action will permanently delete this farmer record
+                    from the system. This action cannot be undone.
+                </div>
+
+
+                <div class="kb-section-title">
+                    Farmer Information
+                </div>
+
+
+                <div class="kb-info-grid">
+
+                    <div class="kb-info-item">
+
+                        <div class="kb-info-label">
+                            Farmer Name
+                        </div>
+
+                        <div class="kb-info-value">
+                            @Model.Name
+                        </div>
+
+                    </div>
+
+
+                    <div class="kb-info-item">
+
+                        <div class="kb-info-label">
+                            Phone Number
+                        </div>
+
+                        <div class="kb-info-value">
+                            @Model.Phone
+                        </div>
+
+                    </div>
+
+
+                    <div class="kb-info-item">
+
+                        <div class="kb-info-label">
+                            Address
+                        </div>
+
+                        <div class="kb-info-value">
+                            @Model.Address
+                        </div>
+
+                    </div>
+
+
+                    <div class="kb-info-item">
+
+                        <div class="kb-info-label">
+                            Email Address
+                        </div>
+
+                        <div class="kb-info-value">
+                            @Model.Email
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <form asp-action="Delete">
+
+                    <input type="hidden"
+                           asp-for="FarmerId" />
+
+                    <div class="kb-actions">
+
+                        <button type="submit"
+                                class="kb-delete-btn">
+                            🗑 Delete Farmer
+                        </button>
+
+                        <a asp-action="Index"
+                           class="kb-cancel-btn">
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```

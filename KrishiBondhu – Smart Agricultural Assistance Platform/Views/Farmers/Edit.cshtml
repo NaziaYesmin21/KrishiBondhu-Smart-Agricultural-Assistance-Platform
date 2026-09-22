@@ -1,0 +1,342 @@
+
+@model Farmer
+
+@{
+    ViewData["Title"] = "Edit Farmer";
+}
+
+<style>
+    .kb-edit-page {
+        min-height: calc(100vh - 70px);
+        background: #f3f6f2;
+        padding: 38px 0 60px;
+    }
+
+    .kb-edit-container {
+        max-width: 850px;
+        margin: auto;
+        padding: 0 22px;
+    }
+
+    .kb-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #607068;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+        .kb-back:hover {
+            color: #176b45;
+        }
+
+    .kb-edit-card {
+        background: white;
+        border: 1px solid #e2e9e3;
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(30, 60, 45, 0.06);
+    }
+
+    .kb-edit-header {
+        background: linear-gradient(135deg, #176b45, #238052);
+        padding: 28px 32px;
+        color: white;
+    }
+
+    .kb-edit-header-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .kb-header-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.16);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .kb-edit-header h1 {
+        margin: 0;
+        font-size: 25px;
+        font-weight: 750;
+    }
+
+    .kb-edit-header p {
+        margin: 5px 0 0;
+        font-size: 13px;
+        color: rgba(255,255,255,0.82);
+    }
+
+    .kb-edit-body {
+        padding: 32px;
+    }
+
+    .kb-form-group {
+        margin-bottom: 21px;
+    }
+
+        .kb-form-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #33483d;
+            font-size: 13px;
+            font-weight: 650;
+        }
+
+    .kb-input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 12px 14px;
+        border: 1px solid #d9e2dc;
+        border-radius: 10px;
+        background: #fbfcfb;
+        color: #30453a;
+        font-size: 14px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+        .kb-input:focus {
+            border-color: #4b9a70;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(75,154,112,0.10);
+        }
+
+    .kb-validation {
+        display: block;
+        margin-top: 5px;
+        color: #c2413b;
+        font-size: 12px;
+    }
+
+    .kb-error-box {
+        background: #fff4f3;
+        border: 1px solid #f2d4d1;
+        color: #a83b35;
+        border-radius: 10px;
+        padding: 11px 14px;
+        margin-bottom: 22px;
+        font-size: 13px;
+    }
+
+    .kb-form-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-top: 8px;
+        border-top: 1px solid #edf1ee;
+        margin-top: 8px;
+    }
+
+    .kb-save-btn {
+        border: none;
+        background: #176b45;
+        color: white;
+        padding: 11px 22px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 650;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+        .kb-save-btn:hover {
+            background: #125637;
+            transform: translateY(-1px);
+        }
+
+    .kb-cancel-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        background: #f0f3f1;
+        color: #59675f;
+        padding: 10px 18px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 650;
+        transition: 0.2s;
+    }
+
+        .kb-cancel-btn:hover {
+            background: #e4e9e5;
+            color: #3d4b43;
+        }
+
+    @@media (max-width: 650px) {
+
+        .kb-edit-page {
+            padding-top: 24px;
+        }
+
+        .kb-edit-container {
+            padding: 0 14px;
+        }
+
+        .kb-edit-header {
+            padding: 23px;
+        }
+
+        .kb-edit-body {
+            padding: 23px;
+        }
+
+        .kb-edit-header h1 {
+            font-size: 22px;
+        }
+
+        .kb-form-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .kb-save-btn,
+        .kb-cancel-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="kb-edit-page">
+
+    <div class="kb-edit-container">
+
+        <a asp-action="Index" class="kb-back">
+            ← Back to Farmers
+        </a>
+
+        <div class="kb-edit-card">
+
+            <div class="kb-edit-header">
+
+                <div class="kb-edit-header-content">
+
+                    <div class="kb-header-icon">
+                        ✏️
+                    </div>
+
+                    <div>
+                        <h1>Edit Farmer</h1>
+
+                        <p>
+                            Update the farmer's information below.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="kb-edit-body">
+
+                <form asp-action="Edit">
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="kb-error-box">
+                    </div>
+
+                    <input type="hidden" asp-for="FarmerId" />
+
+                    <div class="kb-form-group">
+
+                        <label asp-for="Name">
+                            Farmer Name
+                        </label>
+
+                        <input asp-for="Name"
+                               class="kb-input"
+                               placeholder="Enter farmer name" />
+
+                        <span asp-validation-for="Name"
+                              class="kb-validation">
+                        </span>
+
+                    </div>
+
+                    <div class="kb-form-group">
+
+                        <label asp-for="Phone">
+                            Phone Number
+                        </label>
+
+                        <input asp-for="Phone"
+                               class="kb-input"
+                               placeholder="Enter phone number" />
+
+                        <span asp-validation-for="Phone"
+                              class="kb-validation">
+                        </span>
+
+                    </div>
+
+                    <div class="kb-form-group">
+
+                        <label asp-for="Address">
+                            Address
+                        </label>
+
+                        <input asp-for="Address"
+                               class="kb-input"
+                               placeholder="Enter farmer address" />
+
+                        <span asp-validation-for="Address"
+                              class="kb-validation">
+                        </span>
+
+                    </div>
+
+                    <div class="kb-form-group">
+
+                        <label asp-for="Email">
+                            Email Address
+                        </label>
+
+                        <input asp-for="Email"
+                               class="kb-input"
+                               placeholder="Enter email address" />
+
+                        <span asp-validation-for="Email"
+                              class="kb-validation">
+                        </span>
+
+                    </div>
+
+                    <div class="kb-form-actions">
+
+                        <button type="submit" class="kb-save-btn">
+                            ✓ Save Changes
+                        </button>
+
+                        <a asp-action="Index"
+                           class="kb-cancel-btn">
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+```

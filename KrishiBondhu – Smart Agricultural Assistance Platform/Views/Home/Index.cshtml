@@ -1,0 +1,1023 @@
+﻿@{
+    ViewData["Title"] = "KrishiBondhu Dashboard";
+
+    var username = ViewBag.Username as string ?? "Guest";
+    var role = ViewBag.Role as string ?? "User";
+
+    int farmerCount = ViewBag.FarmerCount ?? 0;
+    int farmCount = ViewBag.FarmCount ?? 0;
+    int cropCount = ViewBag.CropCount ?? 0;
+    int soilTestCount = ViewBag.SoilTestCount ?? 0;
+    int diseaseCount = ViewBag.DiseaseCount ?? 0;
+}
+
+<style>
+
+    /* =========================================
+           KRISHIBONDHU DASHBOARD
+        ========================================= */
+
+    .kb-dashboard {
+        min-height: calc(100vh - 135px);
+        padding: 34px 0 60px;
+    }
+
+    .kb-dashboard-container {
+        max-width: 1280px;
+        margin: auto;
+        padding: 0 22px;
+    }
+
+
+    /* =========================================
+           HERO
+        ========================================= */
+
+    .kb-dashboard-hero {
+        position: relative;
+        overflow: hidden;
+        min-height: 310px;
+        border-radius: 26px;
+        padding: 42px 46px;
+        display: flex;
+        align-items: center;
+        margin-bottom: 32px;
+        background: linear-gradient( 115deg, #103824 0%, #155b3a 52%, #23794e 100% );
+        box-shadow: 0 18px 40px rgba(20, 65, 43, 0.16);
+    }
+
+    .kb-hero-circle-one {
+        position: absolute;
+        width: 390px;
+        height: 390px;
+        border-radius: 50%;
+        right: -120px;
+        top: -190px;
+        border: 1px solid rgba(255,255,255,0.09);
+    }
+
+    .kb-hero-circle-two {
+        position: absolute;
+        width: 260px;
+        height: 260px;
+        border-radius: 50%;
+        right: 60px;
+        bottom: -190px;
+        border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    .kb-hero-leaf {
+        position: absolute;
+        right: 75px;
+        bottom: 42px;
+        font-size: 86px;
+        opacity: 0.13;
+        transform: rotate(-12deg);
+    }
+
+    .kb-hero-content {
+        position: relative;
+        z-index: 2;
+        max-width: 720px;
+    }
+
+
+    /* =========================================
+           WELCOME
+        ========================================= */
+
+    .kb-welcome {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 7px 13px;
+        border-radius: 30px;
+        background: rgba(255,255,255,0.09);
+        border: 1px solid rgba(255,255,255,0.13);
+        color: rgba(255,255,255,0.88);
+        font-size: 11px;
+        font-weight: 600;
+        margin-bottom: 18px;
+    }
+
+    .kb-online-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #8de2ae;
+    }
+
+
+    /* =========================================
+           HERO TITLE
+        ========================================= */
+
+    .kb-hero-title {
+        margin: 0;
+        color: white;
+        font-size: 43px;
+        line-height: 1.12;
+        font-weight: 750;
+        letter-spacing: -1.2px;
+    }
+
+        .kb-hero-title span {
+            color: #9ee0b5;
+        }
+
+    .kb-hero-description {
+        margin: 16px 0 24px;
+        max-width: 640px;
+        color: rgba(255,255,255,0.74);
+        font-size: 14px;
+        line-height: 1.75;
+    }
+
+
+    /* =========================================
+           HERO BUTTONS
+        ========================================= */
+
+    .kb-hero-actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .kb-hero-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 17px;
+        background: #ffffff;
+        color: #155b3a;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 700;
+        transition: 0.2s;
+    }
+
+        .kb-hero-primary:hover {
+            color: #155b3a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+        }
+
+    .kb-hero-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 10px 17px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.18);
+        color: white;
+        border-radius: 9px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 650;
+        transition: 0.2s;
+    }
+
+        .kb-hero-secondary:hover {
+            color: white;
+            background: rgba(255,255,255,0.14);
+            transform: translateY(-2px);
+        }
+
+
+    /* =========================================
+           SECTION
+        ========================================= */
+
+    .kb-section {
+        margin-bottom: 32px;
+    }
+
+    .kb-section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        margin-bottom: 15px;
+    }
+
+    .kb-section-title {
+        margin: 0;
+        color: #173d2b;
+        font-size: 21px;
+        font-weight: 750;
+        letter-spacing: -0.3px;
+    }
+
+    .kb-section-description {
+        margin: 4px 0 0;
+        color: #7b8981;
+        font-size: 12px;
+    }
+
+
+    /* =========================================
+           STATISTICS
+        ========================================= */
+
+    .kb-stat-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 13px;
+    }
+
+    .kb-stat {
+        position: relative;
+        background: rgba(255,255,255,0.88);
+        border: 1px solid #dfe9e2;
+        border-radius: 16px;
+        padding: 19px;
+        overflow: hidden;
+        transition: 0.22s;
+    }
+
+        .kb-stat:hover {
+            transform: translateY(-3px);
+            border-color: #c5dccd;
+            box-shadow: 0 12px 25px rgba(31, 77, 52, 0.08);
+        }
+
+    .kb-stat-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+    }
+
+    .kb-stat-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e9f4ed;
+        font-size: 19px;
+    }
+
+    .kb-stat-arrow {
+        color: #a2aea7;
+        font-size: 14px;
+    }
+
+    .kb-stat-number {
+        color: #173d2b;
+        font-size: 27px;
+        line-height: 1;
+        font-weight: 750;
+    }
+
+    .kb-stat-label {
+        color: #78857e;
+        font-size: 11px;
+        margin-top: 7px;
+    }
+
+    .kb-stat-bottom {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 3px;
+        background: #cfe4d6;
+    }
+
+
+    /* =========================================
+           MANAGEMENT MODULES
+        ========================================= */
+
+    .kb-module-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+
+    .kb-module {
+        position: relative;
+        display: block;
+        background: rgba(255,255,255,0.90);
+        border: 1px solid #dfe9e2;
+        border-radius: 17px;
+        padding: 22px;
+        text-decoration: none;
+        overflow: hidden;
+        transition: 0.22s;
+    }
+
+        .kb-module:hover {
+            color: inherit;
+            transform: translateY(-4px);
+            border-color: #bed8c8;
+            box-shadow: 0 14px 28px rgba(31, 77, 52, 0.08);
+        }
+
+    .kb-module-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 17px;
+    }
+
+    .kb-module-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eaf5ee;
+        font-size: 21px;
+    }
+
+    .kb-module-arrow {
+        color: #a3aea7;
+        font-size: 18px;
+        transition: 0.2s;
+    }
+
+    .kb-module:hover .kb-module-arrow {
+        color: #176b45;
+        transform: translateX(3px);
+    }
+
+    .kb-module h3 {
+        margin: 0 0 6px;
+        color: #244536;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .kb-module p {
+        margin: 0;
+        color: #7b8780;
+        font-size: 11px;
+        line-height: 1.65;
+    }
+
+
+    /* =========================================
+           ACCOUNT & ACCESS
+        ========================================= */
+
+    .kb-system-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        background: #dfeee4;
+        border: 1px solid #cfe2d5;
+        border-radius: 16px;
+        padding: 18px 21px;
+        margin-top: 31px;
+    }
+
+    .kb-system-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .kb-system-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 11px;
+        background: #cce4d3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+
+    .kb-system-title {
+        color: #244536;
+        font-size: 12px;
+        font-weight: 700;
+        margin-bottom: 3px;
+    }
+
+    .kb-system-text {
+        color: #6e7e74;
+        font-size: 10px;
+    }
+
+    .kb-role {
+        background: #176b45;
+        color: white;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+
+    /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+    @@media (max-width: 1100px) {
+
+        .kb-stat-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+
+    @@media (max-width: 850px) {
+
+        .kb-dashboard {
+            padding-top: 24px;
+        }
+
+        .kb-dashboard-hero {
+            padding: 36px 30px;
+        }
+
+        .kb-hero-title {
+            font-size: 35px;
+        }
+
+        .kb-module-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+
+    @@media (max-width: 600px) {
+
+        .kb-dashboard-container {
+            padding: 0 14px;
+        }
+
+        .kb-dashboard-hero {
+            min-height: auto;
+            padding: 29px 22px;
+            border-radius: 20px;
+        }
+
+        .kb-hero-title {
+            font-size: 29px;
+        }
+
+        .kb-hero-description {
+            font-size: 13px;
+        }
+
+        .kb-hero-leaf {
+            right: 15px;
+            bottom: 15px;
+            font-size: 60px;
+        }
+
+        .kb-stat-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .kb-stat {
+            padding: 16px;
+        }
+
+        .kb-module-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .kb-system-info {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+    }
+
+
+    @@media (max-width: 390px) {
+
+        .kb-stat-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class="kb-dashboard">
+
+    <div class="kb-dashboard-container">
+
+
+        <!-- =====================================
+             HERO
+        ====================================== -->
+
+        <section class="kb-dashboard-hero">
+
+            <div class="kb-hero-circle-one"></div>
+
+            <div class="kb-hero-circle-two"></div>
+
+            <div class="kb-hero-leaf">
+                🌿
+            </div>
+
+
+            <div class="kb-hero-content">
+
+
+                <div class="kb-welcome">
+
+                    <span class="kb-online-dot"></span>
+
+                    Welcome back, @username
+
+                    <span>•</span>
+
+                    @role
+
+                </div>
+
+
+                <h1 class="kb-hero-title">
+
+                    Agriculture
+                    <span>Made Organized.</span>
+
+                </h1>
+
+
+                <p class="kb-hero-description">
+
+                    KrishiBondhu is a smart agricultural assistance platform
+                    designed to organize farmer, farm, crop, cultivation,
+                    soil and disease records in one connected system.
+
+                </p>
+
+
+                <div class="kb-hero-actions">
+
+                    @if (role == "Admin")
+                    {
+                        <a asp-controller="Farmers"
+                           asp-action="Create"
+                           class="kb-hero-primary">
+
+                            ＋ Add Farmer
+
+                        </a>
+                    }
+
+                    <a asp-controller="Farmers"
+                       asp-action="Index"
+                       class="kb-hero-secondary">
+
+                        👨‍🌾 View Farmers
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             DATABASE OVERVIEW
+        ====================================== -->
+
+        <section class="kb-section">
+
+            <div class="kb-section-heading">
+
+                <div>
+
+                    <h2 class="kb-section-title">
+                        System Overview
+                    </h2>
+
+                    <p class="kb-section-description">
+                        Live records currently stored in KrishiBondhu
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="kb-stat-grid">
+
+
+                <!-- FARMERS -->
+
+                <div class="kb-stat">
+
+                    <div class="kb-stat-top">
+
+                        <div class="kb-stat-icon">
+                            👨‍🌾
+                        </div>
+
+                        <div class="kb-stat-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <div class="kb-stat-number">
+                        @farmerCount
+                    </div>
+
+                    <div class="kb-stat-label">
+                        Registered Farmers
+                    </div>
+
+                    <div class="kb-stat-bottom"></div>
+
+                </div>
+
+
+                <!-- FARMS -->
+
+                <div class="kb-stat">
+
+                    <div class="kb-stat-top">
+
+                        <div class="kb-stat-icon">
+                            🚜
+                        </div>
+
+                        <div class="kb-stat-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <div class="kb-stat-number">
+                        @farmCount
+                    </div>
+
+                    <div class="kb-stat-label">
+                        Farms
+                    </div>
+
+                    <div class="kb-stat-bottom"></div>
+
+                </div>
+
+
+                <!-- CROPS -->
+
+                <div class="kb-stat">
+
+                    <div class="kb-stat-top">
+
+                        <div class="kb-stat-icon">
+                            🌱
+                        </div>
+
+                        <div class="kb-stat-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <div class="kb-stat-number">
+                        @cropCount
+                    </div>
+
+                    <div class="kb-stat-label">
+                        Crop Records
+                    </div>
+
+                    <div class="kb-stat-bottom"></div>
+
+                </div>
+
+
+                <!-- SOIL -->
+
+                <div class="kb-stat">
+
+                    <div class="kb-stat-top">
+
+                        <div class="kb-stat-icon">
+                            🧪
+                        </div>
+
+                        <div class="kb-stat-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <div class="kb-stat-number">
+                        @soilTestCount
+                    </div>
+
+                    <div class="kb-stat-label">
+                        Soil Tests
+                    </div>
+
+                    <div class="kb-stat-bottom"></div>
+
+                </div>
+
+
+                <!-- DISEASE -->
+
+                <div class="kb-stat">
+
+                    <div class="kb-stat-top">
+
+                        <div class="kb-stat-icon">
+                            🔬
+                        </div>
+
+                        <div class="kb-stat-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <div class="kb-stat-number">
+                        @diseaseCount
+                    </div>
+
+                    <div class="kb-stat-label">
+                        Disease Records
+                    </div>
+
+                    <div class="kb-stat-bottom"></div>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             AGRICULTURAL MANAGEMENT
+        ====================================== -->
+
+        <section class="kb-section">
+
+            <div class="kb-section-heading">
+
+                <div>
+
+                    <h2 class="kb-section-title">
+                        Agricultural Management
+                    </h2>
+
+                    <p class="kb-section-description">
+                        Manage the core records of the agricultural database
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="kb-module-grid">
+
+
+                <!-- FARMERS -->
+
+                <a asp-controller="Farmers"
+                   asp-action="Index"
+                   class="kb-module">
+
+                    <div class="kb-module-top">
+
+                        <div class="kb-module-icon">
+                            👨‍🌾
+                        </div>
+
+                        <div class="kb-module-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Farmers
+                    </h3>
+
+                    <p>
+                        Manage farmer profiles, contact information
+                        and registered agricultural users.
+                    </p>
+
+                </a>
+
+
+                <!-- FARMS -->
+
+                <a asp-controller="Farms"
+                   asp-action="Index"
+                   class="kb-module">
+
+                    <div class="kb-module-top">
+
+                        <div class="kb-module-icon">
+                            🚜
+                        </div>
+
+                        <div class="kb-module-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Farms
+                    </h3>
+
+                    <p>
+                        Maintain farm records and connect each farm
+                        with its responsible farmer.
+                    </p>
+
+                </a>
+
+
+                <!-- CROPS -->
+
+                <a asp-controller="Crops"
+                   asp-action="Index"
+                   class="kb-module">
+
+                    <div class="kb-module-top">
+
+                        <div class="kb-module-icon">
+                            🌾
+                        </div>
+
+                        <div class="kb-module-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Crops
+                    </h3>
+
+                    <p>
+                        Organize the crop records used across
+                        the agricultural management system.
+                    </p>
+
+                </a>
+
+
+                <!-- CULTIVATION -->
+
+                <a asp-controller="Cultivations"
+                   asp-action="Index"
+                   class="kb-module">
+
+                    <div class="kb-module-top">
+
+                        <div class="kb-module-icon">
+                            🌱
+                        </div>
+
+                        <div class="kb-module-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Cultivation
+                    </h3>
+
+                    <p>
+                        Connect farms and crops to maintain
+                        cultivation-related records.
+                    </p>
+
+                </a>
+
+
+                <!-- SOIL TEST -->
+
+                <a asp-controller="SoilTests"
+                   asp-action="Index"
+                   class="kb-module">
+
+                    <div class="kb-module-top">
+
+                        <div class="kb-module-icon">
+                            🧪
+                        </div>
+
+                        <div class="kb-module-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Soil Tests
+                    </h3>
+
+                    <p>
+                        Store soil testing information associated
+                        with agricultural farms.
+                    </p>
+
+                </a>
+
+
+                <!-- DISEASE -->
+
+                <a asp-controller="Diseases"
+                   asp-action="Index"
+                   class="kb-module">
+
+                    <div class="kb-module-top">
+
+                        <div class="kb-module-icon">
+                            🔬
+                        </div>
+
+                        <div class="kb-module-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        Diseases
+                    </h3>
+
+                    <p>
+                        Maintain crop disease records for organized
+                        agricultural information management.
+                    </p>
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             ACCOUNT & ACCESS
+        ====================================== -->
+
+        <div class="kb-system-info">
+
+            <div class="kb-system-left">
+
+                <div class="kb-system-icon">
+                    🔐
+                </div>
+
+                <div>
+
+                    <div class="kb-system-title">
+                        Account & Access
+                    </div>
+
+                    <div class="kb-system-text">
+
+                        @if (role == "Admin")
+                        {
+                            <span>
+                                Admin access enabled — record management is available.
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                User access enabled — available records can be viewed.
+                            </span>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="kb-role">
+                @role Account
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>

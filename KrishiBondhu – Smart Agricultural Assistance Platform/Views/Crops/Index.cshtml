@@ -1,0 +1,130 @@
+﻿@model IEnumerable<Crop>
+
+@{
+ViewData["Title"] = "Crops";
+}
+
+<div class="crop-page">
+
+<div class="crop-header">
+    <div>
+        <span class="crop-label">CROP MANAGEMENT</span>
+        <h1>🌾 Crop Directory</h1>
+        <p>Manage and monitor registered crops in KrishiBondhu.</p>
+    </div>
+
+    @if (Context.Session.GetString("Role") == "Admin")
+    {
+        <a asp-action="Create" class="add-crop-btn">
+            + Add New Crop
+        </a>
+    }
+</div>
+
+<div class="crop-count-card">
+    <div class="crop-count-icon">🌱</div>
+
+    <div>
+        <span>REGISTERED CROPS</span>
+        <strong>@Model.Count()</strong>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="crop-table-card">
+
+        <div class="table-wrapper">
+
+            <table class="crop-table">
+
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Crop Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                <span class="crop-id">
+                                    #@item.CropId
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="crop-name">
+                                    <span class="crop-small-icon">🌿</span>
+                                    <strong>@item.CropName</strong>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="crop-actions">
+
+                                    <a asp-action="Details"
+                                       asp-route-id="@item.CropId"
+                                       class="details-btn">
+                                        View
+                                    </a>
+
+                                    @if (Context.Session.GetString("Role") == "Admin")
+                                    {
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.CropId"
+                                           class="edit-btn">
+                                            Edit
+                                        </a>
+
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.CropId"
+                                           class="delete-btn">
+                                            Delete
+                                        </a>
+                                    }
+
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+}
+else
+{
+    <div class="empty-crop-card">
+
+        <div class="empty-icon">🌱</div>
+
+        <h2>No Crops Registered Yet</h2>
+
+        <p>
+            Start building your crop directory by adding the first crop.
+        </p>
+
+        @if (Context.Session.GetString("Role") == "Admin")
+        {
+            <a asp-action="Create" class="empty-add-btn">
+                + Add First Crop
+            </a>
+        }
+
+    </div>
+}
+
+</div>
+
+<style> .crop-page { max-width: 1100px; margin: 0 auto; padding: 20px 10px 50px; } .crop-header { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 25px; } .crop-label { color: #6b8e23; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; } .crop-header h1 { margin: 5px 0 6px; color: #164a2c; font-size: 32px; font-weight: 700; } .crop-header p { margin: 0; color: #6b7c72; font-size: 15px; } .add-crop-btn { background: #164a2c; color: white; text-decoration: none; padding: 12px 19px; border-radius: 10px; font-weight: 600; white-space: nowrap; transition: 0.2s; } .add-crop-btn:hover { background: #0f3921; color: white; } .crop-count-card { display: flex; align-items: center; gap: 15px; background: #f0f7f1; border: 1px solid #dcebdd; border-radius: 16px; padding: 18px 22px; margin-bottom: 22px; width: fit-content; min-width: 220px; } .crop-count-icon { width: 52px; height: 52px; border-radius: 14px; background: #dceedd; display: flex; align-items: center; justify-content: center; font-size: 27px; } .crop-count-card span { display: block; color: #6f7f74; font-size: 11px; font-weight: 700; letter-spacing: 1px; margin-bottom: 3px; } .crop-count-card strong { color: #164a2c; font-size: 25px; } .crop-table-card { background: white; border: 1px solid #e1ebe3; border-radius: 18px; box-shadow: 0 8px 25px rgba(30, 75, 45, 0.07); overflow: hidden; } .table-wrapper { overflow-x: auto; } .crop-table { width: 100%; border-collapse: collapse; } .crop-table thead { background: #164a2c; } .crop-table th { color: white; text-align: left; padding: 15px 20px; font-size: 13px; font-weight: 600; } .crop-table td { padding: 17px 20px; border-bottom: 1px solid #edf2ee; color: #30463a; vertical-align: middle; } .crop-table tbody tr:last-child td { border-bottom: none; } .crop-table tbody tr:hover { background: #f8fbf8; } .crop-id { background: #edf5ee; color: #2d6842; padding: 6px 10px; border-radius: 8px; font-size: 13px; font-weight: 600; } .crop-name { display: flex; align-items: center; gap: 10px; color: #1d4930; font-size: 15px; } .crop-small-icon { width: 34px; height: 34px; background: #e8f4e9; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 18px; } .crop-actions { display: flex; gap: 7px; flex-wrap: wrap; } .crop-actions a { text-decoration: none; padding: 7px 11px; border-radius: 8px; font-size: 12px; font-weight: 600; transition: 0.2s; } .details-btn { background: #e9f1f4; color: #35616f; } .details-btn:hover { background: #dbe8ec; color: #284f5c; } .edit-btn { background: #e5f2e8; color: #24613c; } .edit-btn:hover { background: #d4e9d9; color: #164a2c; } .delete-btn { background: #fbe8e8; color: #a33a3a; } .delete-btn:hover { background: #f6d6d6; color: #872d2d; } .empty-crop-card { background: white; border: 1px dashed #c9ddcd; border-radius: 18px; padding: 55px 25px; text-align: center; } .empty-icon { font-size: 45px; margin-bottom: 12px; } .empty-crop-card h2 { color: #214832; margin: 0 0 8px; } .empty-crop-card p { color: #718078; margin-bottom: 22px; } .empty-add-btn { display: inline-block; background: #164a2c; color: white; text-decoration: none; padding: 11px 18px; border-radius: 9px; font-weight: 600; } .empty-add-btn:hover { background: #0f3921; color: white; } @@media (max-width: 700px) { .crop-header { flex-direction: column; align-items: flex-start; } .crop-header h1 { font-size: 27px; } .add-crop-btn { width: 100%; text-align: center; box-sizing: border-box; } .crop-count-card { width: auto; } .crop-table th, .crop-table td { padding: 13px 12px; } } </style>

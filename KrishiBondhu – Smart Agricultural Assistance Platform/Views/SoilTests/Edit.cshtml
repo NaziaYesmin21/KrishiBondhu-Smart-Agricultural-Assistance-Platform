@@ -1,0 +1,455 @@
+﻿
+@model SoilTest
+
+@{
+    ViewData["Title"] = "Edit Soil Test";
+}
+
+<div class="container py-5">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+
+        <div>
+            <h2 class="fw-bold mb-1" style="color:#174A32;">
+                <i class="bi bi-pencil-square me-2"></i>
+                Edit Soil Test
+            </h2>
+
+            <p class="text-muted mb-0">
+                Update soil quality and nutrient information
+            </p>
+        </div>
+
+        <a asp-action="Index"
+           class="btn btn-outline-success px-4">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Back to Soil Tests
+
+        </a>
+
+    </div>
+
+
+    <!-- Main Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+
+        <!-- Card Header -->
+        <div class="soil-header p-4">
+
+            <div class="d-flex align-items-center">
+
+                <div class="header-icon me-3">
+                    <i class="bi bi-clipboard2-pulse"></i>
+                </div>
+
+                <div>
+
+                    <h4 class="mb-1 fw-bold">
+                        Update Soil Analysis
+                    </h4>
+
+                    <small>
+                        Soil Test ID: @Model.SoilTestId
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Form -->
+        <div class="card-body p-4">
+
+            <form asp-action="Edit" method="post">
+
+                <input type="hidden"
+                       asp-for="SoilTestId" />
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
+                </div>
+
+
+                <div class="row g-4">
+
+
+                    <!-- Farm -->
+                    <div class="col-md-6">
+
+                        <label asp-for="FarmId"
+                               class="form-label fw-semibold">
+
+                            <i class="bi bi-house-door me-1"></i>
+                            Farm
+
+                        </label>
+
+                        <select asp-for="FarmId"
+                                class="form-select"
+                                asp-items="ViewBag.FarmId">
+
+                            <option value="">
+                                -- Select Farm --
+                            </option>
+
+                        </select>
+
+                        <span asp-validation-for="FarmId"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Test Date -->
+                    <div class="col-md-6">
+
+                        <label asp-for="TestDate"
+                               class="form-label fw-semibold">
+
+                            <i class="bi bi-calendar3 me-1"></i>
+                            Test Date
+
+                        </label>
+
+                        <input asp-for="TestDate"
+                               type="date"
+                               class="form-control" />
+
+                        <span asp-validation-for="TestDate"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- pH -->
+                    <div class="col-12">
+
+                        <div class="metric-section">
+
+                            <div class="metric-icon">
+
+                                <i class="bi bi-droplet-half"></i>
+
+                            </div>
+
+                            <div class="flex-grow-1">
+
+                                <label asp-for="PH"
+                                       class="form-label fw-semibold">
+
+                                    Soil pH
+
+                                </label>
+
+                                <input asp-for="PH"
+                                       class="form-control"
+                                       type="number"
+                                       step="0.01"
+                                       min="0"
+                                       max="14" />
+
+                                <small class="text-muted">
+                                    Enter the soil pH level (0–14).
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                        <span asp-validation-for="PH"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+
+                    <!-- Nutrient Section -->
+                    <div class="col-12">
+
+                        <div class="section-title">
+
+                            <i class="bi bi-bar-chart-fill me-2"></i>
+                            Soil Nutrient Information
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Nitrogen -->
+                    <div class="col-md-4">
+
+                        <div class="nutrient-field">
+
+                            <div class="nutrient-icon">
+                                <i class="bi bi-flower1"></i>
+                            </div>
+
+                            <label asp-for="Nitrogen"
+                                   class="form-label fw-semibold">
+
+                                Nitrogen
+
+                            </label>
+
+                            <input asp-for="Nitrogen"
+                                   class="form-control"
+                                   type="number"
+                                   step="0.01"
+                                   min="0" />
+
+                            <small class="text-muted">
+                                mg/kg
+                            </small>
+
+                            <span asp-validation-for="Nitrogen"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Phosphorus -->
+                    <div class="col-md-4">
+
+                        <div class="nutrient-field">
+
+                            <div class="nutrient-icon">
+                                <i class="bi bi-tree"></i>
+                            </div>
+
+                            <label asp-for="Phosphorus"
+                                   class="form-label fw-semibold">
+
+                                Phosphorus
+
+                            </label>
+
+                            <input asp-for="Phosphorus"
+                                   class="form-control"
+                                   type="number"
+                                   step="0.01"
+                                   min="0" />
+
+                            <small class="text-muted">
+                                mg/kg
+                            </small>
+
+                            <span asp-validation-for="Phosphorus"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Potassium -->
+                    <div class="col-md-4">
+
+                        <div class="nutrient-field">
+
+                            <div class="nutrient-icon">
+                                <i class="bi bi-lightning-charge"></i>
+                            </div>
+
+                            <label asp-for="Potassium"
+                                   class="form-label fw-semibold">
+
+                                Potassium
+
+                            </label>
+
+                            <input asp-for="Potassium"
+                                   class="form-control"
+                                   type="number"
+                                   step="0.01"
+                                   min="0" />
+
+                            <small class="text-muted">
+                                mg/kg
+                            </small>
+
+                            <span asp-validation-for="Potassium"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- Actions -->
+                <div class="border-top mt-4 pt-4 d-flex gap-2 flex-wrap">
+
+                    <button type="submit"
+                            class="btn btn-success px-4">
+
+                        <i class="bi bi-check2-circle me-1"></i>
+                        Save Changes
+
+                    </button>
+
+                    <a asp-action="Details"
+                       asp-route-id="@Model.SoilTestId"
+                       class="btn btn-outline-secondary px-4">
+
+                        <i class="bi bi-eye me-1"></i>
+                        View Details
+
+                    </a>
+
+                    <a asp-action="Index"
+                       class="btn btn-outline-secondary px-4">
+
+                        <i class="bi bi-x-lg me-1"></i>
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+
+    .soil-header {
+        background: linear-gradient(
+            135deg,
+            #174A32,
+            #2E7D32
+        );
+
+        color: white;
+    }
+
+    .header-icon {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+    }
+
+    .form-label {
+        color: #294638;
+        font-size: 14px;
+    }
+
+    .form-control,
+    .form-select {
+        border: 1px solid #d7e5da;
+        border-radius: 10px;
+        padding: 10px 12px;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #5b9b6d;
+        box-shadow: 0 0 0 0.2rem rgba(45,138,89,0.12);
+    }
+
+    .metric-section {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 20px;
+        background: #f7fbf8;
+        border: 1px solid #e2eee5;
+        border-radius: 14px;
+    }
+
+    .metric-icon {
+        width: 50px;
+        height: 50px;
+        flex-shrink: 0;
+        border-radius: 13px;
+        background: #dff1e3;
+        color: #174A32;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 23px;
+        margin-top: 4px;
+    }
+
+    .section-title {
+        color: #174A32;
+        font-size: 14px;
+        font-weight: 700;
+        padding-bottom: 9px;
+        border-bottom: 1px solid #e2eee5;
+    }
+
+    .nutrient-field {
+        height: 100%;
+        padding: 20px;
+        background: #f7fbf8;
+        border: 1px solid #e2eee5;
+        border-radius: 14px;
+    }
+
+    .nutrient-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: #e5f3e8;
+        color: #174A32;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .btn-success {
+        background-color: #174A32;
+        border-color: #174A32;
+    }
+
+    .btn-success:hover {
+        background-color: #0f3825;
+        border-color: #0f3825;
+    }
+
+    @@media (max-width: 576px) {
+
+        .metric-section {
+            flex-direction: column;
+        }
+
+        .card-body {
+            padding: 20px !important;
+        }
+
+    }
+
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+```

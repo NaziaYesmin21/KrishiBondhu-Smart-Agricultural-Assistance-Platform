@@ -1,0 +1,624 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] - KrishiBondhu</title>
+
+    <script type="importmap"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <!-- Site CSS -->
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/KrishiBondhu___Smart_Agricultural_Assistance_Platform.styles.css"
+          asp-append-version="true" />
+
+
+    <style>
+
+        /* =========================================
+           GLOBAL
+        ========================================= */
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100%;
+        }
+
+        body {
+            background: #edf5ef;
+            color: #294638;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+
+        .kb-navbar {
+            background: #123f2b;
+            min-height: 72px;
+            border: none;
+            box-shadow: 0 4px 18px rgba(18, 63, 43, 0.15);
+        }
+
+        .kb-navbar-inner {
+            max-width: 1450px;
+            width: 100%;
+            margin: auto;
+            padding: 0 24px;
+        }
+
+
+        /* BRAND */
+
+        .kb-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white !important;
+            text-decoration: none;
+            font-size: 21px;
+            font-weight: 750;
+            letter-spacing: -0.4px;
+        }
+
+        .kb-brand-mark {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: #2d8a59;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+        }
+
+        .kb-brand-text {
+            line-height: 1.05;
+        }
+
+        .kb-brand-name {
+            display: block;
+        }
+
+        .kb-brand-tagline {
+            display: block;
+            color: rgba(255,255,255,0.55);
+            font-size: 8px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+
+        /* NAV LINKS */
+
+        .kb-nav {
+            margin-left: 28px;
+            gap: 3px;
+        }
+
+        .kb-nav-link {
+            color: rgba(255,255,255,0.70) !important;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 9px 11px !important;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .kb-nav-link:hover {
+            color: white !important;
+            background: rgba(255,255,255,0.09);
+        }
+
+
+        /* USER AREA */
+
+        .kb-account {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .kb-account-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-right: 9px;
+        }
+
+        .kb-account-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            background: #205b3f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+        }
+
+        .kb-account-name {
+            color: white;
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+        .kb-account-role {
+            color: #9bc4ab;
+            font-size: 9px;
+            margin-top: 2px;
+        }
+
+
+        /* LOGOUT */
+
+        .kb-logout {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #d9eee0 !important;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.14);
+            background: rgba(255,255,255,0.06);
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .kb-logout:hover {
+            color: white !important;
+            background: rgba(255,255,255,0.13);
+        }
+
+
+        /* =========================================
+           MAIN BACKGROUND
+        ========================================= */
+
+        .kb-main-wrapper {
+            min-height: calc(100vh - 135px);
+
+            background:
+                radial-gradient(
+                    circle at 92% 8%,
+                    rgba(45, 138, 89, 0.08),
+                    transparent 26%
+                ),
+                radial-gradient(
+                    circle at 5% 85%,
+                    rgba(82, 145, 101, 0.05),
+                    transparent 30%
+                ),
+                #edf5ef;
+
+            padding-top: 1px;
+        }
+
+        .kb-main-container {
+            max-width: 1450px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================== */
+
+        .kb-footer {
+            background: #103824;
+            border: none;
+            color: rgba(255,255,255,0.58);
+            padding: 18px 24px;
+            font-size: 10px;
+        }
+
+        .kb-footer-inner {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .kb-footer strong {
+            color: rgba(255,255,255,0.85);
+        }
+
+        .kb-footer a {
+            color: #a9d2b8;
+            text-decoration: none;
+        }
+
+        .kb-footer a:hover {
+            color: white;
+        }
+
+
+        /* =========================================
+           MOBILE NAVBAR
+        ========================================== */
+
+        .kb-toggler {
+            border: 1px solid rgba(255,255,255,0.18) !important;
+            padding: 6px 9px;
+        }
+
+        .kb-toggler:focus {
+            box-shadow: none;
+        }
+
+
+        @@media (max-width: 1200px) {
+
+            .kb-nav {
+                margin-left: 10px;
+            }
+
+            .kb-nav-link {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+            }
+
+        }
+
+
+        @@media (max-width: 991px) {
+
+            .kb-navbar-inner {
+                padding: 0 18px;
+            }
+
+            .kb-nav {
+                margin-left: 0;
+                padding-top: 12px;
+                padding-bottom: 8px;
+            }
+
+            .kb-nav-link {
+                padding: 10px 12px !important;
+            }
+
+            .kb-account {
+                margin: 8px 0 6px;
+                padding-top: 12px;
+                border-top: 1px solid rgba(255,255,255,0.10);
+                justify-content: space-between;
+            }
+
+        }
+
+
+        @@media (max-width: 600px) {
+
+            .kb-brand {
+                font-size: 18px;
+            }
+
+            .kb-brand-mark {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+            }
+
+            .kb-brand-tagline {
+                font-size: 7px;
+            }
+
+            .kb-main-container {
+                padding: 0 14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         NAVBAR
+    ========================================== -->
+
+    <header>
+
+        <nav class="navbar navbar-expand-lg kb-navbar">
+
+            <div class="kb-navbar-inner d-flex align-items-center">
+
+                <!-- BRAND -->
+
+                <a class="kb-brand"
+                   asp-area=""
+                   asp-controller="Home"
+                   asp-action="Index">
+
+                    <span class="kb-brand-mark">
+                        🌱
+                    </span>
+
+                    <span class="kb-brand-text">
+
+                        <span class="kb-brand-name">
+                            KrishiBondhu
+                        </span>
+
+                        <span class="kb-brand-tagline">
+                            Smart Agricultural Assistance
+                        </span>
+
+                    </span>
+
+                </a>
+
+
+                <!-- MOBILE BUTTON -->
+
+                <button class="navbar-toggler kb-toggler ms-auto"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#kbNavigation"
+                        aria-controls="kbNavigation"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+
+                </button>
+
+
+                <!-- NAVIGATION -->
+
+                <div class="collapse navbar-collapse"
+                     id="kbNavigation">
+
+
+                    <ul class="navbar-nav kb-nav me-auto">
+
+
+                        <li class="nav-item">
+
+                            <a class="nav-link kb-nav-link"
+                               asp-area=""
+                               asp-controller="Home"
+                               asp-action="Index">
+
+                                🏠 Home
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a class="nav-link kb-nav-link"
+                               asp-area=""
+                               asp-controller="Farmers"
+                               asp-action="Index">
+
+                                👨‍🌾 Farmers
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a class="nav-link kb-nav-link"
+                               asp-area=""
+                               asp-controller="Farms"
+                               asp-action="Index">
+
+                                🌾 Farms
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a class="nav-link kb-nav-link"
+                               asp-area=""
+                               asp-controller="Crops"
+                               asp-action="Index">
+
+                                🌱 Crops
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a class="nav-link kb-nav-link"
+                               asp-area=""
+                               asp-controller="Cultivations"
+                               asp-action="Index">
+
+                                🚜 Cultivations
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a class="nav-link kb-nav-link"
+                               asp-area=""
+                               asp-controller="SoilTests"
+                               asp-action="Index">
+
+                                🧪 Soil Tests
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a class="nav-link kb-nav-link"
+                               asp-area=""
+                               asp-controller="Diseases"
+                               asp-action="Index">
+
+                                🩺 Diseases
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+
+                    <!-- ACCOUNT -->
+
+                    @if (Context.Session.GetString("Username") != null)
+                    {
+
+                        <div class="kb-account">
+
+
+                            <div class="kb-account-info">
+
+                                <div class="kb-account-icon">
+                                    👤
+                                </div>
+
+                                <div>
+
+                                    <div class="kb-account-name">
+                                        @Context.Session.GetString("Username")
+                                    </div>
+
+                                    <div class="kb-account-role">
+                                        @Context.Session.GetString("Role") Account
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <a class="kb-logout"
+                               asp-controller="Auth"
+                               asp-action="Logout">
+
+                                ↪ Logout
+
+                            </a>
+
+
+                        </div>
+
+                    }
+
+                </div>
+
+            </div>
+
+        </nav>
+
+    </header>
+
+
+    <!-- =========================================
+         MAIN CONTENT
+    ========================================== -->
+
+    <div class="kb-main-wrapper">
+
+        <main role="main"
+              class="kb-main-container">
+
+            @RenderBody()
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================
+         FOOTER
+    ========================================== -->
+
+    <footer class="kb-footer">
+
+        <div class="kb-footer-inner">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+                <div>
+
+                    © 2026
+                    <strong>KrishiBondhu</strong>
+                    — Smart Agricultural Assistance Platform
+
+                </div>
+
+                <div>
+
+                    <a asp-area=""
+                       asp-controller="Home"
+                       asp-action="Privacy">
+
+                        Privacy
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- SCRIPTS -->
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>
