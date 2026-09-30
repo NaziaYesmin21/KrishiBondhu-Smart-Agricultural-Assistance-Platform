@@ -1,8 +1,9 @@
 
+using KrishiBondhu___Smart_Agricultural_Assistance_Platform.Middleware;
+using KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QuestPDF.Infrastructure;
-using KrishiBondhu___Smart_Agricultural_Assistance_Platform.Middleware;
 
 QuestPDF.Settings.License = LicenseType.Evaluation;
 
@@ -23,6 +24,8 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+builder.Services.AddScoped<IAIAssistantService, AIAssistantService>();
+builder.Services.AddScoped<HarvestReminderService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(

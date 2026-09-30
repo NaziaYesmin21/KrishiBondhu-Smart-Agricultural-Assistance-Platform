@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "KrishiBondhu Dashboard";
 
     var username = ViewBag.Username as string ?? "Guest";
@@ -18,6 +19,10 @@
     var diseaseStatistics =
         ViewBag.DiseaseStatistics as List<DiseaseStatistics>
         ?? new List<DiseaseStatistics>();
+
+    var upcomingHarvests =
+        ViewBag.UpcomingHarvests as List<Cultivation>
+        ?? new List<Cultivation>();
 
     int maxCropCount = cropStatistics.Any()
         ? cropStatistics.Max(x => x.Count)
@@ -58,7 +63,7 @@
         display: flex;
         align-items: center;
         margin-bottom: 32px;
-        background: linear-gradient( 115deg, #103824 0%, #155b3a 52%, #23794e 100% );
+        background: linear-gradient(115deg, #103824 0%, #155b3a 52%, #23794e 100%);
         box-shadow: 0 18px 40px rgba(20, 65, 43, 0.16);
     }
 
@@ -382,18 +387,77 @@
 
     .kb-chart-bar {
         height: 100%;
-        background: linear-gradient( 90deg, #176b45, #53a878 );
+        background: linear-gradient(90deg, #176b45, #53a878);
         border-radius: 20px;
         min-width: 5px;
         transition: width 0.4s ease;
     }
 
     .kb-chart-bar-disease {
-        background: linear-gradient( 90deg, #477b61, #83b89a );
+        background: linear-gradient(90deg, #477b61, #83b89a);
     }
 
     .kb-empty-chart {
         padding: 35px 15px;
+        text-align: center;
+        background: #f8faf9;
+        border-radius: 12px;
+        color: #7b8780;
+        font-size: 12px;
+    }
+
+    /* =========================================
+           HARVEST REMINDER
+        ========================================= */
+
+    .kb-harvest-card {
+        background: rgba(255,255,255,0.92);
+        border: 1px solid #dfe9e2;
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 0 6px 18px rgba(31, 77, 52, 0.05);
+    }
+
+    .kb-harvest-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        padding: 16px;
+        margin-bottom: 10px;
+        background: #f8faf9;
+        border: 1px solid #dfe9e2;
+        border-radius: 13px;
+    }
+
+        .kb-harvest-item:last-child {
+            margin-bottom: 0;
+        }
+
+    .kb-harvest-date {
+        color: #244536;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .kb-harvest-id {
+        color: #7b8780;
+        font-size: 11px;
+        margin-top: 5px;
+    }
+
+    .kb-harvest-badge {
+        background: #e9f4ed;
+        color: #176b45;
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .kb-harvest-empty {
+        padding: 28px 15px;
         text-align: center;
         background: #f8faf9;
         border-radius: 12px;
@@ -604,6 +668,11 @@
             align-items: flex-start;
             flex-direction: column;
         }
+
+        .kb-harvest-item {
+            align-items: flex-start;
+            flex-direction: column;
+        }
     }
 
     @@media (max-width: 390px) {
@@ -715,8 +784,6 @@
 
             <div class="kb-stat-grid">
 
-                <!-- FARMERS -->
-
                 <div class="kb-stat">
 
                     <div class="kb-stat-top">
@@ -743,8 +810,6 @@
 
                 </div>
 
-
-                <!-- FARMS -->
 
                 <div class="kb-stat">
 
@@ -773,8 +838,6 @@
                 </div>
 
 
-                <!-- CROPS -->
-
                 <div class="kb-stat">
 
                     <div class="kb-stat-top">
@@ -801,8 +864,6 @@
 
                 </div>
 
-
-                <!-- CULTIVATION -->
 
                 <div class="kb-stat">
 
@@ -831,8 +892,6 @@
                 </div>
 
 
-                <!-- SOIL -->
-
                 <div class="kb-stat">
 
                     <div class="kb-stat-top">
@@ -859,8 +918,6 @@
 
                 </div>
 
-
-                <!-- DISEASE -->
 
                 <div class="kb-stat">
 
@@ -917,7 +974,6 @@
 
 
             <div class="kb-analytics-grid">
-
 
                 <!-- CROP STATISTICS -->
 
@@ -1053,6 +1109,97 @@
                 </div>
 
             </div>
+
+        </section>
+
+
+        <!-- =====================================
+             HARVEST REMINDERS
+        ====================================== -->
+
+        <section class="kb-section">
+
+            <div class="kb-section-heading">
+
+                <div>
+
+                    <h2 class="kb-section-title">
+                        🌾 Harvest Reminders
+                    </h2>
+
+                    <p class="kb-section-description">
+                        Upcoming harvests within the next 7 days
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            @if (upcomingHarvests.Any())
+            {
+                <div class="kb-harvest-card">
+
+                    @foreach (var cultivation in upcomingHarvests)
+                    {
+                        var daysLeft =
+                            (cultivation.HarvestDate.Value.Date - DateTime.Now.Date).Days;
+
+                        <div class="kb-harvest-item">
+
+                            <div>
+
+                                <div class="kb-harvest-date">
+
+                                    🌱 Harvest Date:
+                                    @cultivation.HarvestDate.Value.ToString("dd MMM yyyy")
+
+                                </div>
+
+                                <div class="kb-harvest-id">
+
+                                    Cultivation ID:
+                                    @cultivation.CultivationId
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="kb-harvest-badge">
+
+                                @if (daysLeft == 0)
+                                {
+                                    <span>Harvest Today</span>
+                                }
+                                else if (daysLeft == 1)
+                                {
+                                    <span>Tomorrow</span>
+                                }
+                                else
+                                {
+                                    <span>In @daysLeft days</span>
+                                }
+
+                            </div>
+
+                        </div>
+                    }
+
+                </div>
+            }
+            else
+            {
+                <div class="kb-harvest-card">
+
+                    <div class="kb-harvest-empty">
+
+                        🌱 No upcoming harvests within the next 7 days.
+
+                    </div>
+
+                </div>
+            }
 
         </section>
 
@@ -1263,6 +1410,36 @@
                 </a>
 
 
+                <!-- AI AGRICULTURAL ASSISTANT -->
+
+                <a asp-controller="AIAssistant"
+                   asp-action="Index"
+                   class="kb-module">
+
+                    <div class="kb-module-top">
+
+                        <div class="kb-module-icon">
+                            🤖
+                        </div>
+
+                        <div class="kb-module-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <h3>
+                        AI Agricultural Assistant
+                    </h3>
+
+                    <p>
+                        Ask agricultural questions about crops,
+                        soil, diseases and cultivation practices.
+                    </p>
+
+                </a>
+
+
             </div>
 
         </section>
@@ -1316,3 +1493,4 @@
     </div>
 
 </div>
+

@@ -7,10 +7,14 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
     public class HomeController : Controller
     {
         private readonly IDashboardService _dashboardService;
+        private readonly HarvestReminderService _harvestReminderService;
 
-        public HomeController(IDashboardService dashboardService)
+        public HomeController(
+            IDashboardService dashboardService,
+            HarvestReminderService harvestReminderService)
         {
             _dashboardService = dashboardService;
+            _harvestReminderService = harvestReminderService;
         }
 
         public async Task<IActionResult> Index()
@@ -44,6 +48,10 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
             ViewBag.DiseaseStatistics =
                 await _dashboardService.GetDiseaseStatisticsAsync();
+
+            // Harvest Reminder
+            ViewBag.UpcomingHarvests =
+                await _harvestReminderService.GetUpcomingHarvestsAsync();
 
             return View();
         }
