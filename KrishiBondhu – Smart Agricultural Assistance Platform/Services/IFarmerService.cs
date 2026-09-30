@@ -5,6 +5,8 @@ public interface IFarmerService
 {
     Task<List<Farmer>> GetAllFarmersAsync();
 
+    Task<List<Farmer>> SearchFarmersAsync(string searchTerm);
+
     Task<Farmer?> GetFarmerByIdAsync(int id);
 
     Task CreateFarmerAsync(Farmer farmer);

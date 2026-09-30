@@ -1,187 +1,175 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
-public class FarmersController : Controller
+namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 {
-    private readonly IFarmerService _farmerService;
-
-    public FarmersController(IFarmerService farmerService)
+    public class FarmersController : Controller
     {
-        _farmerService = farmerService;
-    }
+        private readonly IFarmerService _farmerService;
 
-    // Check whether the logged-in user is an Admin
-    private bool IsAdmin()
-    {
-        return HttpContext.Session.GetString("Role") == "Admin";
-    }
-
-    // GET: Farmers
-    // Admin and User can view farmer list
-    public async Task<IActionResult> Index()
-    {
-        var farmers = await _farmerService.GetAllFarmersAsync();
-
-        return View(farmers);
-    }
-
-    // GET: Farmers/Details/5
-    // Admin and User can view details
-    public async Task<IActionResult> Details(int? id)
-    {
-        if (id == null)
+        public FarmersController(IFarmerService farmerService)
         {
-            return NotFound();
+            _farmerService = farmerService;
         }
 
-        var farmer = await _farmerService.GetFarmerByIdAsync(id.Value);
-
-        if (farmer == null)
+        private bool IsAdmin()
         {
-            return NotFound();
+            return HttpContext.Session.GetString("Role") == "Admin";
         }
 
-        return View(farmer);
-    }
-
-    // GET: Farmers/Create
-    // Only Admin can create
-    public IActionResult Create()
-    {
-        if (!IsAdmin())
+        public async Task<IActionResult> Index(string searchTerm)
         {
-            return RedirectToAction("Login", "Auth");
+            var farmers = await _farmerService
+                .SearchFarmersAsync(searchTerm);
+
+            ViewBag.SearchTerm = searchTerm;
+
+            return View(farmers);
         }
 
-        return View();
-    }
-
-    // POST: Farmers/Create
-    // Only Admin can create
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(
-        [Bind("FarmerId,Name,Phone,Address,Email")] Farmer farmer)
-    {
-        if (!IsAdmin())
+        public async Task<IActionResult> Details(int? id)
         {
-            return RedirectToAction("Login", "Auth");
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var farmer = await _farmerService
+                .GetFarmerByIdAsync(id.Value);
+
+            if (farmer == null)
+            {
+                return NotFound();
+            }
+
+            return View(farmer);
         }
 
-        if (ModelState.IsValid)
+        public IActionResult Create()
         {
-            await _farmerService.CreateFarmerAsync(farmer);
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
 
-            return RedirectToAction(nameof(Index));
+            return View();
         }
 
-        return View(farmer);
-    }
-
-    // GET: Farmers/Edit/5
-    // Only Admin can edit
-    public async Task<IActionResult> Edit(int? id)
-    {
-        if (!IsAdmin())
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(
+            [Bind("FarmerId,Name,Phone,Address,Email")] Farmer farmer)
         {
-            return RedirectToAction("Login", "Auth");
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (ModelState.IsValid)
+            {
+                await _farmerService.CreateFarmerAsync(farmer);
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(farmer);
         }
 
-        if (id == null)
+        public async Task<IActionResult> Edit(int? id)
         {
-            return NotFound();
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var farmer = await _farmerService
+                .GetFarmerByIdAsync(id.Value);
+
+            if (farmer == null)
+            {
+                return NotFound();
+            }
+
+            return View(farmer);
         }
 
-        var farmer = await _farmerService.GetFarmerByIdAsync(id.Value);
-
-        if (farmer == null)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("FarmerId,Name,Phone,Address,Email")] Farmer farmer)
         {
-            return NotFound();
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id != farmer.FarmerId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                var updated = await _farmerService
+                    .UpdateFarmerAsync(farmer);
+
+                if (!updated)
+                {
+                    return NotFound();
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(farmer);
         }
 
-        return View(farmer);
-    }
-
-    // POST: Farmers/Edit/5
-    // Only Admin can edit
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(
-        int id,
-        [Bind("FarmerId,Name,Phone,Address,Email")] Farmer farmer)
-    {
-        if (!IsAdmin())
+        public async Task<IActionResult> Delete(int? id)
         {
-            return RedirectToAction("Login", "Auth");
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var farmer = await _farmerService
+                .GetFarmerByIdAsync(id.Value);
+
+            if (farmer == null)
+            {
+                return NotFound();
+            }
+
+            return View(farmer);
         }
 
-        if (id != farmer.FarmerId)
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            return NotFound();
-        }
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
 
-        if (ModelState.IsValid)
-        {
-            var updated = await _farmerService.UpdateFarmerAsync(farmer);
+            var deleted = await _farmerService
+                .DeleteFarmerAsync(id);
 
-            if (!updated)
+            if (!deleted)
             {
                 return NotFound();
             }
 
             return RedirectToAction(nameof(Index));
         }
-
-        return View(farmer);
-    }
-
-    // GET: Farmers/Delete/5
-    // Only Admin can delete
-    public async Task<IActionResult> Delete(int? id)
-    {
-        if (!IsAdmin())
-        {
-            return RedirectToAction("Login", "Auth");
-        }
-
-        if (id == null)
-        {
-            return NotFound();
-        }
-
-        var farmer = await _farmerService.GetFarmerByIdAsync(id.Value);
-
-        if (farmer == null)
-        {
-            return NotFound();
-        }
-
-        return View(farmer);
-    }
-
-    // POST: Farmers/Delete/5
-    // Only Admin can delete
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
-    {
-        if (!IsAdmin())
-        {
-            return RedirectToAction("Login", "Auth");
-        }
-
-        var deleted = await _farmerService.DeleteFarmerAsync(id);
-
-        if (!deleted)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(Index));
-    }
-
-    private async Task<bool> FarmerExists(int id)
-    {
-        return await _farmerService.FarmerExistsAsync(id);
     }
 }

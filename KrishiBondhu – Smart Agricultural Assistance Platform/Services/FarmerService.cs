@@ -14,6 +14,20 @@ public class FarmerService : IFarmerService
         return await _context.Farmers.ToListAsync();
     }
 
+    public async Task<List<Farmer>> SearchFarmersAsync(string searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm))
+        {
+            return await _context.Farmers.ToListAsync();
+        }
+
+        return await _context.Farmers
+            .Where(f =>
+                f.Name.Contains(searchTerm) ||
+                f.Phone.Contains(searchTerm))
+            .ToListAsync();
+    }
+
     public async Task<Farmer?> GetFarmerByIdAsync(int id)
     {
         return await _context.Farmers

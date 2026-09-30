@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Farmers";
+    string searchTerm = ViewBag.SearchTerm ?? "";
 }
 
 <style>
@@ -89,6 +90,76 @@
     .kb-summary-text {
         color: #7c8680;
         font-size: 13px;
+    }
+
+    /* SEARCH */
+
+    .kb-search-card {
+        background: white;
+        border: 1px solid #e3e9e4;
+        border-radius: 17px;
+        padding: 18px 20px;
+        margin-bottom: 20px;
+    }
+
+    .kb-search-form {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .kb-search-input {
+        flex: 1;
+        border: 1px solid #dce5df;
+        border-radius: 10px;
+        padding: 11px 14px;
+        font-size: 13px;
+        outline: none;
+        color: #33483d;
+        background: #fbfcfb;
+    }
+
+        .kb-search-input:focus {
+            border-color: #176b45;
+            box-shadow: 0 0 0 3px rgba(23,107,69,0.08);
+        }
+
+    .kb-search-btn {
+        border: none;
+        background: #176b45;
+        color: white;
+        padding: 11px 18px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 650;
+        cursor: pointer;
+    }
+
+        .kb-search-btn:hover {
+            background: #125637;
+        }
+
+    .kb-clear-btn {
+        text-decoration: none;
+        background: #eef2ef;
+        color: #53645b;
+        padding: 11px 16px;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+        .kb-clear-btn:hover {
+            background: #e1e8e3;
+            color: #35473e;
+        }
+
+    .kb-search-label {
+        display: block;
+        color: #40564b;
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 8px;
     }
 
     .kb-table-card {
@@ -256,6 +327,7 @@
     }
 
     @@media (max-width: 700px) {
+
         .kb-page {
             padding-top: 22px;
         }
@@ -281,6 +353,16 @@
         .kb-summary {
             padding: 17px;
         }
+
+        .kb-search-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .kb-search-btn,
+        .kb-clear-btn {
+            text-align: center;
+        }
     }
 </style>
 
@@ -294,11 +376,13 @@
         <div class="kb-page-header">
 
             <div class="kb-title-area">
+
                 <h1>Farmers</h1>
 
                 <p>
                     Manage registered farmers and their contact information.
                 </p>
+
             </div>
 
             <a asp-action="Create" class="kb-add-btn">
@@ -318,14 +402,65 @@
             </div>
 
             <div>
+
                 <div class="kb-summary-number">
                     @Model.Count()
                 </div>
 
                 <div class="kb-summary-text">
-                    Registered farmers in the system
+
+                    @if (string.IsNullOrWhiteSpace(searchTerm))
+                    {
+                        <span>Registered farmers in the system</span>
+                    }
+                    else
+                    {
+                        <span>Matching farmers found</span>
+                    }
+
                 </div>
+
             </div>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <div class="kb-search-card">
+
+            <form asp-action="Index"
+                  method="get"
+                  class="kb-search-form">
+
+                <div style="flex:1;">
+
+                    <label class="kb-search-label">
+                        Search Farmers
+                    </label>
+
+                    <input type="text"
+                           name="searchTerm"
+                           value="@searchTerm"
+                           class="kb-search-input"
+                           placeholder="Search by farmer name or phone number..." />
+
+                </div>
+
+                <button type="submit"
+                        class="kb-search-btn">
+                    🔎 Search
+                </button>
+
+                @if (!string.IsNullOrWhiteSpace(searchTerm))
+                {
+                    <a asp-action="Index"
+                       class="kb-clear-btn">
+                        Clear
+                    </a>
+                }
+
+            </form>
 
         </div>
 
@@ -341,7 +476,18 @@
                 </div>
 
                 <div class="kb-table-subtitle">
-                    Available farmer records
+
+                    @if (string.IsNullOrWhiteSpace(searchTerm))
+                    {
+                        <span>Available farmer records</span>
+                    }
+                    else
+                    {
+                        <span>
+                            Search results for "<strong>@searchTerm</strong>"
+                        </span>
+                    }
+
                 </div>
 
             </div>
@@ -354,6 +500,7 @@
                     <table class="kb-table">
 
                         <thead>
+
                             <tr>
                                 <th>Farmer</th>
                                 <th>Phone</th>
@@ -361,6 +508,7 @@
                                 <th>Email</th>
                                 <th>Actions</th>
                             </tr>
+
                         </thead>
 
                         <tbody>
@@ -370,6 +518,7 @@
                                 <tr>
 
                                     <td>
+
                                         <div class="kb-farmer">
 
                                             <div class="kb-avatar">
@@ -381,6 +530,7 @@
                                             </div>
 
                                         </div>
+
                                     </td>
 
                                     <td>
@@ -438,16 +588,46 @@
                         👨‍🌾
                     </div>
 
-                    <h3>No farmers registered yet</h3>
+                    <h3>
+                        @if (string.IsNullOrWhiteSpace(searchTerm))
+                        {
+                            <span>No farmers registered yet</span>
+                        }
+                        else
+                        {
+                            <span>No matching farmers found</span>
+                        }
+                    </h3>
 
                     <p>
-                        There are currently no farmer records in the database.
-                        Add your first farmer to start managing agricultural information.
+                        @if (string.IsNullOrWhiteSpace(searchTerm))
+                        {
+                            <span>
+                                There are currently no farmer records in the database.
+                                Add your first farmer to start managing agricultural information.
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                No farmer record matched your search.
+                                Try another name or phone number.
+                            </span>
+                        }
                     </p>
 
-                    <a asp-action="Create" class="kb-add-btn">
-                        ＋ Add First Farmer
-                    </a>
+                    @if (string.IsNullOrWhiteSpace(searchTerm))
+                    {
+                        <a asp-action="Create" class="kb-add-btn">
+                            ＋ Add First Farmer
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="Index" class="kb-add-btn">
+                            View All Farmers
+                        </a>
+                    }
 
                 </div>
             }
