@@ -1,19 +1,30 @@
 using Microsoft.AspNetCore.Mvc;
+using ClosedXML.Excel;
 
 namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 {
     public class FarmersController : Controller
     {
         private readonly IFarmerService _farmerService;
+        private readonly IAuditLogService _auditLogService;
 
-        public FarmersController(IFarmerService farmerService)
+        public FarmersController(
+            IFarmerService farmerService,
+            IAuditLogService auditLogService)
         {
             _farmerService = farmerService;
+            _auditLogService = auditLogService;
         }
 
         private bool IsAdmin()
         {
             return HttpContext.Session.GetString("Role") == "Admin";
+        }
+
+        private string GetUsername()
+        {
+            return HttpContext.Session.GetString("Username")
+                   ?? "Unknown User";
         }
 
 
@@ -99,6 +110,76 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
 
         // =========================
+        // Export Farmers to Excel
+        // =========================
+        public async Task<IActionResult> ExportExcel()
+        {
+            if (!IsAdmin())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var farmers = await _farmerService
+                .SearchFarmersAsync(null);
+
+            using var workbook = new XLWorkbook();
+
+            var worksheet = workbook.Worksheets.Add("Farmers");
+
+            // Header
+            worksheet.Cell(1, 1).Value = "Farmer ID";
+            worksheet.Cell(1, 2).Value = "Name";
+            worksheet.Cell(1, 3).Value = "Phone";
+            worksheet.Cell(1, 4).Value = "Address";
+            worksheet.Cell(1, 5).Value = "Email";
+
+            // Header Style
+            var headerRange = worksheet.Range("A1:E1");
+
+            headerRange.Style.Font.Bold = true;
+            headerRange.Style.Fill.BackgroundColor =
+                XLColor.DarkGreen;
+            headerRange.Style.Font.FontColor =
+                XLColor.White;
+
+            // Farmer Data
+            int row = 2;
+
+            foreach (var farmer in farmers)
+            {
+                worksheet.Cell(row, 1).Value = farmer.FarmerId;
+                worksheet.Cell(row, 2).Value = farmer.Name;
+                worksheet.Cell(row, 3).Value = farmer.Phone;
+                worksheet.Cell(row, 4).Value = farmer.Address;
+                worksheet.Cell(row, 5).Value = farmer.Email;
+
+                row++;
+            }
+
+            // Adjust column width
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+
+            workbook.SaveAs(stream);
+
+            var content = stream.ToArray();
+
+            // Audit Log
+            await _auditLogService.LogAsync(
+                GetUsername(),
+                "Export Excel",
+                "Exported farmer list to Excel file."
+            );
+
+            return File(
+                content,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "Farmers.xlsx");
+        }
+
+
+        // =========================
         // Create Farmer - GET
         // =========================
         public IActionResult Create()
@@ -128,6 +209,13 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             if (ModelState.IsValid)
             {
                 await _farmerService.CreateFarmerAsync(farmer);
+
+                // Audit Log
+                await _auditLogService.LogAsync(
+                    GetUsername(),
+                    "Create Farmer",
+                    $"Created farmer: {farmer.Name}"
+                );
 
                 TempData["SuccessMessage"] =
                     "Farmer created successfully!";
@@ -195,6 +283,13 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                     return NotFound();
                 }
 
+                // Audit Log
+                await _auditLogService.LogAsync(
+                    GetUsername(),
+                    "Update Farmer",
+                    $"Updated farmer ID: {farmer.FarmerId}"
+                );
+
                 TempData["SuccessMessage"] =
                     "Farmer updated successfully!";
 
@@ -251,6 +346,13 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             {
                 return NotFound();
             }
+
+            // Audit Log
+            await _auditLogService.LogAsync(
+                GetUsername(),
+                "Delete Farmer",
+                $"Deleted farmer ID: {id}"
+            );
 
             TempData["SuccessMessage"] =
                 "Farmer deleted successfully!";

@@ -22,6 +22,8 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
 
+    public DbSet<AuditLog> AuditLogs { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -38,6 +40,11 @@ public class ApplicationDbContext : DbContext
         // Soil Test date field
         modelBuilder.Entity<SoilTest>()
             .Property(s => s.TestDate)
+            .HasColumnType("timestamp without time zone");
+
+        // Audit Log date field
+        modelBuilder.Entity<AuditLog>()
+            .Property(a => a.Timestamp)
             .HasColumnType("timestamp without time zone");
     }
 }

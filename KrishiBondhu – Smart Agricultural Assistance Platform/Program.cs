@@ -22,6 +22,7 @@ builder.Services.AddScoped<IFarmService, FarmService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(

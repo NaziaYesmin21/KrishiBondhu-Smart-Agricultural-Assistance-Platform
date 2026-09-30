@@ -26,9 +26,17 @@
 
         @if (Context.Session.GetString("Role") == "Admin")
         {
-            <a asp-action="Create" class="btn-add">
-                + Add Farmer
-            </a>
+            <div class="header-actions">
+
+                <a asp-action="ExportExcel" class="btn-export">
+                    📊 Export Excel
+                </a>
+
+                <a asp-action="Create" class="btn-add">
+                    + Add Farmer
+                </a>
+
+            </div>
         }
 
     </div>
@@ -323,6 +331,15 @@
         }
 
 
+    /* Header Actions */
+
+    .header-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+
     /* Add Farmer Button */
 
     .btn-add {
@@ -335,6 +352,23 @@
     }
 
         .btn-add:hover {
+            background: #157347;
+            color: white;
+        }
+
+
+    /* Export Excel Button */
+
+    .btn-export {
+        background: #198754;
+        color: white;
+        padding: 11px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .btn-export:hover {
             background: #157347;
             color: white;
         }
@@ -585,6 +619,11 @@
             flex-direction: column;
             align-items: flex-start;
             gap: 15px;
+        }
+
+        .header-actions {
+            width: 100%;
+            flex-wrap: wrap;
         }
 
         .form-row {
