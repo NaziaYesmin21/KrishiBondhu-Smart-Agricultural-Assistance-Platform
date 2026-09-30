@@ -28,6 +28,18 @@ public class FarmerService : IFarmerService
             .ToListAsync();
     }
 
+    public async Task<List<Farmer>> FilterFarmersAsync(string address)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            return await _context.Farmers.ToListAsync();
+        }
+
+        return await _context.Farmers
+            .Where(f => f.Address.Contains(address))
+            .ToListAsync();
+    }
+
     public async Task<Farmer?> GetFarmerByIdAsync(int id)
     {
         return await _context.Farmers

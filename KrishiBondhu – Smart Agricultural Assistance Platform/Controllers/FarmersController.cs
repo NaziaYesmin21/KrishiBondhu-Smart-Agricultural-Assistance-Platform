@@ -16,16 +16,69 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             return HttpContext.Session.GetString("Role") == "Admin";
         }
 
-        public async Task<IActionResult> Index(string searchTerm)
+
+        // =========================
+        // Farmer List
+        // Search + Filter + Pagination
+        // =========================
+        public async Task<IActionResult> Index(
+            string searchTerm,
+            string address,
+            int page = 1)
         {
             var farmers = await _farmerService
                 .SearchFarmersAsync(searchTerm);
 
-            ViewBag.SearchTerm = searchTerm;
+            // Address Filter
+            if (!string.IsNullOrWhiteSpace(address))
+            {
+                farmers = farmers
+                    .Where(f => f.Address.Contains(address))
+                    .ToList();
+            }
 
-            return View(farmers);
+            // Pagination
+            int pageSize = 5;
+
+            int totalFarmers = farmers.Count;
+
+            int totalPages = (int)Math.Ceiling(
+                totalFarmers / (double)pageSize);
+
+            if (totalPages == 0)
+            {
+                totalPages = 1;
+            }
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            if (page > totalPages)
+            {
+                page = totalPages;
+            }
+
+            var paginatedFarmers = farmers
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            ViewBag.SearchTerm = searchTerm;
+            ViewBag.Address = address;
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.TotalFarmers = totalFarmers;
+
+            return View(paginatedFarmers);
         }
 
+
+        // =========================
+        // Farmer Details
+        // =========================
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,6 +97,10 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             return View(farmer);
         }
 
+
+        // =========================
+        // Create Farmer - GET
+        // =========================
         public IActionResult Create()
         {
             if (!IsAdmin())
@@ -54,6 +111,10 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             return View();
         }
 
+
+        // =========================
+        // Create Farmer - POST
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -68,12 +129,19 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             {
                 await _farmerService.CreateFarmerAsync(farmer);
 
+                TempData["SuccessMessage"] =
+                    "Farmer created successfully!";
+
                 return RedirectToAction(nameof(Index));
             }
 
             return View(farmer);
         }
 
+
+        // =========================
+        // Edit Farmer - GET
+        // =========================
         public async Task<IActionResult> Edit(int? id)
         {
             if (!IsAdmin())
@@ -97,6 +165,10 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             return View(farmer);
         }
 
+
+        // =========================
+        // Edit Farmer - POST
+        // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
@@ -123,12 +195,19 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                     return NotFound();
                 }
 
+                TempData["SuccessMessage"] =
+                    "Farmer updated successfully!";
+
                 return RedirectToAction(nameof(Index));
             }
 
             return View(farmer);
         }
 
+
+        // =========================
+        // Delete Farmer - GET
+        // =========================
         public async Task<IActionResult> Delete(int? id)
         {
             if (!IsAdmin())
@@ -152,6 +231,10 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             return View(farmer);
         }
 
+
+        // =========================
+        // Delete Farmer - POST
+        // =========================
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -168,6 +251,9 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             {
                 return NotFound();
             }
+
+            TempData["SuccessMessage"] =
+                "Farmer deleted successfully!";
 
             return RedirectToAction(nameof(Index));
         }
