@@ -1,29 +1,43 @@
 using KrishiBondhu___Smart_Agricultural_Assistance_Platform.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IDashboardService _dashboardService;
 
-        public HomeController(ApplicationDbContext context)
+        public HomeController(IDashboardService dashboardService)
         {
-            _context = context;
+            _dashboardService = dashboardService;
         }
 
         public async Task<IActionResult> Index()
         {
-            ViewBag.Username = HttpContext.Session.GetString("Username") ?? "Guest";
-            ViewBag.Role = HttpContext.Session.GetString("Role") ?? "User";
+            ViewBag.Username =
+                HttpContext.Session.GetString("Username") ?? "Guest";
 
-            ViewBag.FarmerCount = await _context.Farmers.CountAsync();
-            ViewBag.FarmCount = await _context.Farms.CountAsync();
-            ViewBag.CropCount = await _context.Crops.CountAsync();
-            ViewBag.SoilTestCount = await _context.SoilTests.CountAsync();
-            ViewBag.DiseaseCount = await _context.Diseases.CountAsync();
+            ViewBag.Role =
+                HttpContext.Session.GetString("Role") ?? "User";
+
+            ViewBag.FarmerCount =
+                await _dashboardService.GetFarmerCountAsync();
+
+            ViewBag.FarmCount =
+                await _dashboardService.GetFarmCountAsync();
+
+            ViewBag.CropCount =
+                await _dashboardService.GetCropCountAsync();
+
+            ViewBag.CultivationCount =
+                await _dashboardService.GetCultivationCountAsync();
+
+            ViewBag.SoilTestCount =
+                await _dashboardService.GetSoilTestCountAsync();
+
+            ViewBag.DiseaseCount =
+                await _dashboardService.GetDiseaseCountAsync();
 
             return View();
         }

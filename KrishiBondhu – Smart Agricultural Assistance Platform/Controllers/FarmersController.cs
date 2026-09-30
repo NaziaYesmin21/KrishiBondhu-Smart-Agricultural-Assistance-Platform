@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 public class FarmersController : Controller
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IFarmerService _farmerService;
 
-    public FarmersController(ApplicationDbContext context)
+    public FarmersController(IFarmerService farmerService)
     {
-        _context = context;
+        _farmerService = farmerService;
     }
 
     // Check whether the logged-in user is an Admin
@@ -20,7 +20,9 @@ public class FarmersController : Controller
     // Admin and User can view farmer list
     public async Task<IActionResult> Index()
     {
-        return View(await _context.Farmers.ToListAsync());
+        var farmers = await _farmerService.GetAllFarmersAsync();
+
+        return View(farmers);
     }
 
     // GET: Farmers/Details/5
@@ -32,8 +34,7 @@ public class FarmersController : Controller
             return NotFound();
         }
 
-        var farmer = await _context.Farmers
-            .FirstOrDefaultAsync(m => m.FarmerId == id);
+        var farmer = await _farmerService.GetFarmerByIdAsync(id.Value);
 
         if (farmer == null)
         {
@@ -69,8 +70,7 @@ public class FarmersController : Controller
 
         if (ModelState.IsValid)
         {
-            _context.Add(farmer);
-            await _context.SaveChangesAsync();
+            await _farmerService.CreateFarmerAsync(farmer);
 
             return RedirectToAction(nameof(Index));
         }
@@ -92,7 +92,7 @@ public class FarmersController : Controller
             return NotFound();
         }
 
-        var farmer = await _context.Farmers.FindAsync(id);
+        var farmer = await _farmerService.GetFarmerByIdAsync(id.Value);
 
         if (farmer == null)
         {
@@ -122,19 +122,11 @@ public class FarmersController : Controller
 
         if (ModelState.IsValid)
         {
-            try
-            {
-                _context.Update(farmer);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FarmerExists(farmer.FarmerId))
-                {
-                    return NotFound();
-                }
+            var updated = await _farmerService.UpdateFarmerAsync(farmer);
 
-                throw;
+            if (!updated)
+            {
+                return NotFound();
             }
 
             return RedirectToAction(nameof(Index));
@@ -157,8 +149,7 @@ public class FarmersController : Controller
             return NotFound();
         }
 
-        var farmer = await _context.Farmers
-            .FirstOrDefaultAsync(m => m.FarmerId == id);
+        var farmer = await _farmerService.GetFarmerByIdAsync(id.Value);
 
         if (farmer == null)
         {
@@ -179,19 +170,18 @@ public class FarmersController : Controller
             return RedirectToAction("Login", "Auth");
         }
 
-        var farmer = await _context.Farmers.FindAsync(id);
+        var deleted = await _farmerService.DeleteFarmerAsync(id);
 
-        if (farmer != null)
+        if (!deleted)
         {
-            _context.Farmers.Remove(farmer);
-            await _context.SaveChangesAsync();
+            return NotFound();
         }
 
         return RedirectToAction(nameof(Index));
     }
 
-    private bool FarmerExists(int id)
+    private async Task<bool> FarmerExists(int id)
     {
-        return _context.Farmers.Any(e => e.FarmerId == id);
+        return await _farmerService.FarmerExistsAsync(id);
     }
 }

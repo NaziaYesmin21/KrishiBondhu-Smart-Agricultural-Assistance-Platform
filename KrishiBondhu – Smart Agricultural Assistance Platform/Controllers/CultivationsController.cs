@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 {
     public class CultivationsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ICultivationService _cultivationService;
 
-        public CultivationsController(ApplicationDbContext context)
+        public CultivationsController(
+            ApplicationDbContext context,
+            ICultivationService cultivationService)
         {
             _context = context;
+            _cultivationService = cultivationService;
         }
 
         private bool IsAdmin()
@@ -19,17 +22,17 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: Cultivations
+        // Admin and User can view cultivation list
         public async Task<IActionResult> Index()
         {
-            var cultivations = await _context.Cultivations
-                .Include(c => c.Farm)
-                .Include(c => c.Crop)
-                .ToListAsync();
+            var cultivations =
+                await _cultivationService.GetAllCultivationsAsync();
 
             return View(cultivations);
         }
 
         // GET: Cultivations/Details/5
+        // Admin and User can view details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -37,10 +40,8 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            var cultivation = await _context.Cultivations
-                .Include(c => c.Farm)
-                .Include(c => c.Crop)
-                .FirstOrDefaultAsync(c => c.CultivationId == id);
+            var cultivation =
+                await _cultivationService.GetCultivationByIdAsync(id.Value);
 
             if (cultivation == null)
             {
@@ -51,6 +52,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: Cultivations/Create
+        // Only Admin can create
         [HttpGet]
         public IActionResult Create()
         {
@@ -75,6 +77,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // POST: Cultivations/Create
+        // Only Admin can create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Cultivation cultivation)
@@ -89,8 +92,8 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Cultivations.Add(cultivation);
-                await _context.SaveChangesAsync();
+                await _cultivationService
+                    .CreateCultivationAsync(cultivation);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -113,6 +116,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: Cultivations/Edit/5
+        // Only Admin can edit
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -126,7 +130,8 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            var cultivation = await _context.Cultivations.FindAsync(id);
+            var cultivation =
+                await _cultivationService.GetCultivationByIdAsync(id.Value);
 
             if (cultivation == null)
             {
@@ -151,9 +156,12 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // POST: Cultivations/Edit/5
+        // Only Admin can edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Cultivation cultivation)
+        public async Task<IActionResult> Edit(
+            int id,
+            Cultivation cultivation)
         {
             if (!IsAdmin())
             {
@@ -170,19 +178,13 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(cultivation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CultivationExists(cultivation.CultivationId))
-                    {
-                        return NotFound();
-                    }
+                var updated =
+                    await _cultivationService
+                        .UpdateCultivationAsync(cultivation);
 
-                    throw;
+                if (!updated)
+                {
+                    return NotFound();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -206,6 +208,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: Cultivations/Delete/5
+        // Only Admin can delete
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -219,10 +222,8 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            var cultivation = await _context.Cultivations
-                .Include(c => c.Farm)
-                .Include(c => c.Crop)
-                .FirstOrDefaultAsync(c => c.CultivationId == id);
+            var cultivation =
+                await _cultivationService.GetCultivationByIdAsync(id.Value);
 
             if (cultivation == null)
             {
@@ -233,6 +234,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // POST: Cultivations/Delete/5
+        // Only Admin can delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -242,22 +244,15 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var cultivation = await _context.Cultivations.FindAsync(id);
+            var deleted =
+                await _cultivationService.DeleteCultivationAsync(id);
 
-            if (cultivation != null)
+            if (!deleted)
             {
-                _context.Cultivations.Remove(cultivation);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
             return RedirectToAction(nameof(Index));
         }
-
-        private bool CultivationExists(int id)
-        {
-            return _context.Cultivations
-                .Any(c => c.CultivationId == id);
-        }
     }
-
 }

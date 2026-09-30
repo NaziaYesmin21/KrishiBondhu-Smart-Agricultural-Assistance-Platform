@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 {
     public class SoilTestsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ISoilTestService _soilTestService;
 
-        public SoilTestsController(ApplicationDbContext context)
+        public SoilTestsController(
+            ApplicationDbContext context,
+            ISoilTestService soilTestService)
         {
             _context = context;
+            _soilTestService = soilTestService;
         }
 
         private bool IsAdmin()
@@ -19,16 +22,17 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: SoilTests
+        // Admin and User can view soil tests
         public async Task<IActionResult> Index()
         {
-            var soilTests = await _context.SoilTests
-                .Include(s => s.Farm)
-                .ToListAsync();
+            var soilTests =
+                await _soilTestService.GetAllSoilTestsAsync();
 
             return View(soilTests);
         }
 
         // GET: SoilTests/Details/5
+        // Admin and User can view details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -36,9 +40,8 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            var soilTest = await _context.SoilTests
-                .Include(s => s.Farm)
-                .FirstOrDefaultAsync(s => s.SoilTestId == id);
+            var soilTest =
+                await _soilTestService.GetSoilTestByIdAsync(id.Value);
 
             if (soilTest == null)
             {
@@ -49,6 +52,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: SoilTests/Create
+        // Only Admin can create
         [HttpGet]
         public IActionResult Create()
         {
@@ -67,6 +71,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // POST: SoilTests/Create
+        // Only Admin can create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SoilTest soilTest)
@@ -80,8 +85,8 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.SoilTests.Add(soilTest);
-                await _context.SaveChangesAsync();
+                await _soilTestService
+                    .CreateSoilTestAsync(soilTest);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -97,6 +102,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: SoilTests/Edit/5
+        // Only Admin can edit
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -110,7 +116,8 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            var soilTest = await _context.SoilTests.FindAsync(id);
+            var soilTest =
+                await _soilTestService.GetSoilTestByIdAsync(id.Value);
 
             if (soilTest == null)
             {
@@ -128,9 +135,12 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // POST: SoilTests/Edit/5
+        // Only Admin can edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, SoilTest soilTest)
+        public async Task<IActionResult> Edit(
+            int id,
+            SoilTest soilTest)
         {
             if (!IsAdmin())
             {
@@ -146,19 +156,13 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(soilTest);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SoilTestExists(soilTest.SoilTestId))
-                    {
-                        return NotFound();
-                    }
+                var updated =
+                    await _soilTestService
+                        .UpdateSoilTestAsync(soilTest);
 
-                    throw;
+                if (!updated)
+                {
+                    return NotFound();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -175,6 +179,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: SoilTests/Delete/5
+        // Only Admin can delete
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -188,9 +193,8 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            var soilTest = await _context.SoilTests
-                .Include(s => s.Farm)
-                .FirstOrDefaultAsync(s => s.SoilTestId == id);
+            var soilTest =
+                await _soilTestService.GetSoilTestByIdAsync(id.Value);
 
             if (soilTest == null)
             {
@@ -201,6 +205,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // POST: SoilTests/Delete/5
+        // Only Admin can delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -210,20 +215,15 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var soilTest = await _context.SoilTests.FindAsync(id);
+            var deleted =
+                await _soilTestService.DeleteSoilTestAsync(id);
 
-            if (soilTest != null)
+            if (!deleted)
             {
-                _context.SoilTests.Remove(soilTest);
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool SoilTestExists(int id)
-        {
-            return _context.SoilTests.Any(s => s.SoilTestId == id);
         }
     }
 }

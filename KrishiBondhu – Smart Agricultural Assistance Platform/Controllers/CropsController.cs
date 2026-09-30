@@ -1,15 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 {
     public class CropsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ICropService _cropService;
 
-        public CropsController(ApplicationDbContext context)
+        public CropsController(ICropService cropService)
         {
-            _context = context;
+            _cropService = cropService;
         }
 
         private bool IsAdmin()
@@ -18,15 +17,16 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: Crops
+        // Admin and User can view crop list
         public async Task<IActionResult> Index()
         {
-            var crops = await _context.Crops
-                .ToListAsync();
+            var crops = await _cropService.GetAllCropsAsync();
 
             return View(crops);
         }
 
         // GET: Crops/Details/5
+        // Admin and User can view details
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -34,8 +34,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            var crop = await _context.Crops
-                .FirstOrDefaultAsync(c => c.CropId == id);
+            var crop = await _cropService.GetCropByIdAsync(id.Value);
 
             if (crop == null)
             {
@@ -46,6 +45,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: Crops/Create
+        // Only Admin can create
         [HttpGet]
         public IActionResult Create()
         {
@@ -58,6 +58,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // POST: Crops/Create
+        // Only Admin can create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Crop crop)
@@ -69,9 +70,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Crops.Add(crop);
-
-                await _context.SaveChangesAsync();
+                await _cropService.CreateCropAsync(crop);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -80,6 +79,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: Crops/Edit/5
+        // Only Admin can edit
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -93,7 +93,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            var crop = await _context.Crops.FindAsync(id);
+            var crop = await _cropService.GetCropByIdAsync(id.Value);
 
             if (crop == null)
             {
@@ -104,6 +104,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // POST: Crops/Edit/5
+        // Only Admin can edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Crop crop)
@@ -120,20 +121,11 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(crop);
+                var updated = await _cropService.UpdateCropAsync(crop);
 
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
+                if (!updated)
                 {
-                    if (!CropExists(crop.CropId))
-                    {
-                        return NotFound();
-                    }
-
-                    throw;
+                    return NotFound();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -143,6 +135,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // GET: Crops/Delete/5
+        // Only Admin can delete
         [HttpGet]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -156,8 +149,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            var crop = await _context.Crops
-                .FirstOrDefaultAsync(c => c.CropId == id);
+            var crop = await _cropService.GetCropByIdAsync(id.Value);
 
             if (crop == null)
             {
@@ -168,6 +160,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // POST: Crops/Delete/5
+        // Only Admin can delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -177,22 +170,14 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
-            var crop = await _context.Crops.FindAsync(id);
+            var deleted = await _cropService.DeleteCropAsync(id);
 
-            if (crop != null)
+            if (!deleted)
             {
-                _context.Crops.Remove(crop);
-
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
 
             return RedirectToAction(nameof(Index));
         }
-
-        private bool CropExists(int id)
-        {
-            return _context.Crops.Any(c => c.CropId == id);
-        }
     }
-
 }

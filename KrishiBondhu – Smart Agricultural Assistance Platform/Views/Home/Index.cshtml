@@ -7,6 +7,7 @@
     int farmerCount = ViewBag.FarmerCount ?? 0;
     int farmCount = ViewBag.FarmCount ?? 0;
     int cropCount = ViewBag.CropCount ?? 0;
+    int cultivationCount = ViewBag.CultivationCount ?? 0;
     int soilTestCount = ViewBag.SoilTestCount ?? 0;
     int diseaseCount = ViewBag.DiseaseCount ?? 0;
 }
@@ -14,8 +15,8 @@
 <style>
 
     /* =========================================
-           KRISHIBONDHU DASHBOARD
-        ========================================= */
+               KRISHIBONDHU DASHBOARD
+            ========================================= */
 
     .kb-dashboard {
         min-height: calc(100vh - 135px);
@@ -30,8 +31,8 @@
 
 
     /* =========================================
-           HERO
-        ========================================= */
+               HERO
+            ========================================= */
 
     .kb-dashboard-hero {
         position: relative;
@@ -42,7 +43,7 @@
         display: flex;
         align-items: center;
         margin-bottom: 32px;
-        background: linear-gradient( 115deg, #103824 0%, #155b3a 52%, #23794e 100% );
+        background: linear-gradient(115deg, #103824 0%, #155b3a 52%, #23794e 100%);
         box-shadow: 0 18px 40px rgba(20, 65, 43, 0.16);
     }
 
@@ -83,8 +84,8 @@
 
 
     /* =========================================
-           WELCOME
-        ========================================= */
+               WELCOME
+            ========================================= */
 
     .kb-welcome {
         display: inline-flex;
@@ -109,8 +110,8 @@
 
 
     /* =========================================
-           HERO TITLE
-        ========================================= */
+               HERO TITLE
+            ========================================= */
 
     .kb-hero-title {
         margin: 0;
@@ -135,8 +136,8 @@
 
 
     /* =========================================
-           HERO BUTTONS
-        ========================================= */
+               HERO BUTTONS
+            ========================================= */
 
     .kb-hero-actions {
         display: flex;
@@ -187,8 +188,8 @@
 
 
     /* =========================================
-           SECTION
-        ========================================= */
+               SECTION
+            ========================================= */
 
     .kb-section {
         margin-bottom: 32px;
@@ -217,12 +218,12 @@
 
 
     /* =========================================
-           STATISTICS
-        ========================================= */
+               STATISTICS
+            ========================================= */
 
     .kb-stat-grid {
         display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         gap: 13px;
     }
 
@@ -289,8 +290,8 @@
 
 
     /* =========================================
-           MANAGEMENT MODULES
-        ========================================= */
+               MANAGEMENT MODULES
+            ========================================= */
 
     .kb-module-grid {
         display: grid;
@@ -362,8 +363,8 @@
 
 
     /* =========================================
-           ACCOUNT & ACCESS
-        ========================================= */
+               ACCOUNT & ACCESS
+            ========================================= */
 
     .kb-system-info {
         display: flex;
@@ -417,8 +418,8 @@
 
 
     /* =========================================
-           RESPONSIVE
-        ========================================= */
+               RESPONSIVE
+            ========================================= */
 
     @@media (max-width: 1100px) {
 
@@ -500,6 +501,7 @@
             grid-template-columns: 1fr;
         }
     }
+
 </style>
 
 
@@ -690,6 +692,35 @@
 
                     <div class="kb-stat-label">
                         Crop Records
+                    </div>
+
+                    <div class="kb-stat-bottom"></div>
+
+                </div>
+
+
+                <!-- CULTIVATION -->
+
+                <div class="kb-stat">
+
+                    <div class="kb-stat-top">
+
+                        <div class="kb-stat-icon">
+                            🌱
+                        </div>
+
+                        <div class="kb-stat-arrow">
+                            →
+                        </div>
+
+                    </div>
+
+                    <div class="kb-stat-number">
+                        @cultivationCount
+                    </div>
+
+                    <div class="kb-stat-label">
+                        Cultivation Records
                     </div>
 
                     <div class="kb-stat-bottom"></div>

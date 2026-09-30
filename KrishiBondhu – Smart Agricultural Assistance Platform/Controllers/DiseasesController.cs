@@ -1,17 +1,19 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 
 namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 {
     public class DiseasesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IDiseaseService _diseaseService;
 
-        public DiseasesController(ApplicationDbContext context)
+        public DiseasesController(
+            ApplicationDbContext context,
+            IDiseaseService diseaseService)
         {
             _context = context;
+            _diseaseService = diseaseService;
         }
 
         // =========================
@@ -29,9 +31,8 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var diseases = await _context.Diseases
-                .Include(d => d.Crop)
-                .ToListAsync();
+            var diseases =
+                await _diseaseService.GetAllDiseasesAsync();
 
             return View(diseases);
         }
@@ -43,14 +44,17 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
+            {
                 return NotFound();
+            }
 
-            var disease = await _context.Diseases
-                .Include(d => d.Crop)
-                .FirstOrDefaultAsync(d => d.DiseaseId == id);
+            var disease =
+                await _diseaseService.GetDiseaseByIdAsync(id.Value);
 
             if (disease == null)
+            {
                 return NotFound();
+            }
 
             return View(disease);
         }
@@ -63,7 +67,9 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         public IActionResult Create()
         {
             if (!IsAdmin())
+            {
                 return RedirectToAction("AccessDenied", "Auth");
+            }
 
             ViewData["CropId"] = new SelectList(
                 _context.Crops,
@@ -83,14 +89,16 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         public async Task<IActionResult> Create(Disease disease)
         {
             if (!IsAdmin())
+            {
                 return RedirectToAction("AccessDenied", "Auth");
+            }
 
             ModelState.Remove("Crop");
 
             if (ModelState.IsValid)
             {
-                _context.Diseases.Add(disease);
-                await _context.SaveChangesAsync();
+                await _diseaseService
+                    .CreateDiseaseAsync(disease);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -113,15 +121,22 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         public async Task<IActionResult> Edit(int? id)
         {
             if (!IsAdmin())
+            {
                 return RedirectToAction("AccessDenied", "Auth");
+            }
 
             if (id == null)
+            {
                 return NotFound();
+            }
 
-            var disease = await _context.Diseases.FindAsync(id);
+            var disease =
+                await _diseaseService.GetDiseaseByIdAsync(id.Value);
 
             if (disease == null)
+            {
                 return NotFound();
+            }
 
             ViewData["CropId"] = new SelectList(
                 _context.Crops,
@@ -139,29 +154,31 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Disease disease)
+        public async Task<IActionResult> Edit(
+            int id,
+            Disease disease)
         {
             if (!IsAdmin())
+            {
                 return RedirectToAction("AccessDenied", "Auth");
+            }
 
             if (id != disease.DiseaseId)
+            {
                 return NotFound();
+            }
 
             ModelState.Remove("Crop");
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(disease);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DiseaseExists(disease.DiseaseId))
-                        return NotFound();
+                var updated =
+                    await _diseaseService
+                        .UpdateDiseaseAsync(disease);
 
-                    throw;
+                if (!updated)
+                {
+                    return NotFound();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -185,17 +202,22 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         public async Task<IActionResult> Delete(int? id)
         {
             if (!IsAdmin())
+            {
                 return RedirectToAction("AccessDenied", "Auth");
+            }
 
             if (id == null)
+            {
                 return NotFound();
+            }
 
-            var disease = await _context.Diseases
-                .Include(d => d.Crop)
-                .FirstOrDefaultAsync(d => d.DiseaseId == id);
+            var disease =
+                await _diseaseService.GetDiseaseByIdAsync(id.Value);
 
             if (disease == null)
+            {
                 return NotFound();
+            }
 
             return View(disease);
         }
@@ -210,27 +232,19 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (!IsAdmin())
-                return RedirectToAction("AccessDenied", "Auth");
-
-            var disease = await _context.Diseases.FindAsync(id);
-
-            if (disease != null)
             {
-                _context.Diseases.Remove(disease);
-                await _context.SaveChangesAsync();
+                return RedirectToAction("AccessDenied", "Auth");
+            }
+
+            var deleted =
+                await _diseaseService.DeleteDiseaseAsync(id);
+
+            if (!deleted)
+            {
+                return NotFound();
             }
 
             return RedirectToAction(nameof(Index));
         }
-
-        // =========================
-        // CHECK DISEASE EXISTS
-        // =========================
-
-        private bool DiseaseExists(int id)
-        {
-            return _context.Diseases.Any(d => d.DiseaseId == id);
-        }
     }
 }
-
