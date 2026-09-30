@@ -11,6 +11,8 @@ public interface IFarmerService
 
     Task<Farmer?> GetFarmerByIdAsync(int id);
 
+    Task<FarmerProfileViewModel?> GetFarmerProfileAsync(int id);
+
     Task CreateFarmerAsync(Farmer farmer);
 
     Task<bool> UpdateFarmerAsync(Farmer farmer);

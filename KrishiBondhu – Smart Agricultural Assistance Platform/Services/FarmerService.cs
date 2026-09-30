@@ -9,16 +9,27 @@ public class FarmerService : IFarmerService
         _context = context;
     }
 
+
+    // =========================
+    // Get All Farmers
+    // =========================
     public async Task<List<Farmer>> GetAllFarmersAsync()
     {
-        return await _context.Farmers.ToListAsync();
+        return await _context.Farmers
+            .ToListAsync();
     }
 
-    public async Task<List<Farmer>> SearchFarmersAsync(string searchTerm)
+
+    // =========================
+    // Search Farmers
+    // =========================
+    public async Task<List<Farmer>> SearchFarmersAsync(
+        string searchTerm)
     {
         if (string.IsNullOrWhiteSpace(searchTerm))
         {
-            return await _context.Farmers.ToListAsync();
+            return await _context.Farmers
+                .ToListAsync();
         }
 
         return await _context.Farmers
@@ -28,11 +39,17 @@ public class FarmerService : IFarmerService
             .ToListAsync();
     }
 
-    public async Task<List<Farmer>> FilterFarmersAsync(string address)
+
+    // =========================
+    // Filter Farmers by Address
+    // =========================
+    public async Task<List<Farmer>> FilterFarmersAsync(
+        string address)
     {
         if (string.IsNullOrWhiteSpace(address))
         {
-            return await _context.Farmers.ToListAsync();
+            return await _context.Farmers
+                .ToListAsync();
         }
 
         return await _context.Farmers
@@ -40,18 +57,74 @@ public class FarmerService : IFarmerService
             .ToListAsync();
     }
 
+
+    // =========================
+    // Get Farmer by ID
+    // =========================
     public async Task<Farmer?> GetFarmerByIdAsync(int id)
     {
         return await _context.Farmers
             .FirstOrDefaultAsync(f => f.FarmerId == id);
     }
 
+
+    // =========================
+    // Get Complete Farmer Profile
+    // =========================
+    public async Task<FarmerProfileViewModel?> GetFarmerProfileAsync(
+        int id)
+    {
+        var farmer = await _context.Farmers
+            .FirstOrDefaultAsync(f => f.FarmerId == id);
+
+        if (farmer == null)
+        {
+            return null;
+        }
+
+        var farms = await _context.Farms
+            .Where(f => f.FarmerId == id)
+            .ToListAsync();
+
+        var farmIds = farms
+            .Select(f => f.FarmId)
+            .ToList();
+
+        var cultivations = await _context.Cultivations
+            .Where(c => farmIds.Contains(c.FarmId))
+            .Include(c => c.Crop)
+            .Include(c => c.Farm)
+            .ToListAsync();
+
+        var soilTests = await _context.SoilTests
+            .Where(s => farmIds.Contains(s.FarmId))
+            .Include(s => s.Farm)
+            .ToListAsync();
+
+        return new FarmerProfileViewModel
+        {
+            Farmer = farmer,
+            Farms = farms,
+            Cultivations = cultivations,
+            SoilTests = soilTests
+        };
+    }
+
+
+    // =========================
+    // Create Farmer
+    // =========================
     public async Task CreateFarmerAsync(Farmer farmer)
     {
         _context.Farmers.Add(farmer);
+
         await _context.SaveChangesAsync();
     }
 
+
+    // =========================
+    // Update Farmer
+    // =========================
     public async Task<bool> UpdateFarmerAsync(Farmer farmer)
     {
         var existingFarmer = await _context.Farmers
@@ -72,9 +145,14 @@ public class FarmerService : IFarmerService
         return true;
     }
 
+
+    // =========================
+    // Delete Farmer
+    // =========================
     public async Task<bool> DeleteFarmerAsync(int id)
     {
-        var farmer = await _context.Farmers.FindAsync(id);
+        var farmer = await _context.Farmers
+            .FindAsync(id);
 
         if (farmer == null)
         {
@@ -82,11 +160,16 @@ public class FarmerService : IFarmerService
         }
 
         _context.Farmers.Remove(farmer);
+
         await _context.SaveChangesAsync();
 
         return true;
     }
 
+
+    // =========================
+    // Check Farmer Exists
+    // =========================
     public async Task<bool> FarmerExistsAsync(int id)
     {
         return await _context.Farmers

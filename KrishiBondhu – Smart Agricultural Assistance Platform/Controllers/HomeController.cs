@@ -39,6 +39,12 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             ViewBag.DiseaseCount =
                 await _dashboardService.GetDiseaseCountAsync();
 
+            ViewBag.CropStatistics =
+                await _dashboardService.GetCropStatisticsAsync();
+
+            ViewBag.DiseaseStatistics =
+                await _dashboardService.GetDiseaseStatisticsAsync();
+
             return View();
         }
 

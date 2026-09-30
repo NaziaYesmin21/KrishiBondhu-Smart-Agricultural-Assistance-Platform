@@ -77,7 +77,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
 
         // =========================
-        // Farmer Details
+        // Farmer Profile / Details
         // =========================
         public async Task<IActionResult> Details(int? id)
         {
@@ -86,15 +86,15 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            var farmer = await _farmerService
-                .GetFarmerByIdAsync(id.Value);
+            var profile = await _farmerService
+                .GetFarmerProfileAsync(id.Value);
 
-            if (farmer == null)
+            if (profile == null)
             {
                 return NotFound();
             }
 
-            return View(farmer);
+            return View(profile);
         }
 
 

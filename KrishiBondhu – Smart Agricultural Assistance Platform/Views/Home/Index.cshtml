@@ -10,13 +10,29 @@
     int cultivationCount = ViewBag.CultivationCount ?? 0;
     int soilTestCount = ViewBag.SoilTestCount ?? 0;
     int diseaseCount = ViewBag.DiseaseCount ?? 0;
+
+    var cropStatistics =
+        ViewBag.CropStatistics as List<CropStatistics>
+        ?? new List<CropStatistics>();
+
+    var diseaseStatistics =
+        ViewBag.DiseaseStatistics as List<DiseaseStatistics>
+        ?? new List<DiseaseStatistics>();
+
+    int maxCropCount = cropStatistics.Any()
+        ? cropStatistics.Max(x => x.Count)
+        : 1;
+
+    int maxDiseaseCount = diseaseStatistics.Any()
+        ? diseaseStatistics.Max(x => x.Count)
+        : 1;
 }
 
 <style>
 
     /* =========================================
-               KRISHIBONDHU DASHBOARD
-            ========================================= */
+           KRISHIBONDHU DASHBOARD
+        ========================================= */
 
     .kb-dashboard {
         min-height: calc(100vh - 135px);
@@ -29,10 +45,9 @@
         padding: 0 22px;
     }
 
-
     /* =========================================
-               HERO
-            ========================================= */
+           HERO
+        ========================================= */
 
     .kb-dashboard-hero {
         position: relative;
@@ -43,7 +58,7 @@
         display: flex;
         align-items: center;
         margin-bottom: 32px;
-        background: linear-gradient(115deg, #103824 0%, #155b3a 52%, #23794e 100%);
+        background: linear-gradient( 115deg, #103824 0%, #155b3a 52%, #23794e 100% );
         box-shadow: 0 18px 40px rgba(20, 65, 43, 0.16);
     }
 
@@ -82,10 +97,9 @@
         max-width: 720px;
     }
 
-
     /* =========================================
-               WELCOME
-            ========================================= */
+           WELCOME
+        ========================================= */
 
     .kb-welcome {
         display: inline-flex;
@@ -108,10 +122,9 @@
         background: #8de2ae;
     }
 
-
     /* =========================================
-               HERO TITLE
-            ========================================= */
+           HERO TITLE
+        ========================================= */
 
     .kb-hero-title {
         margin: 0;
@@ -134,10 +147,9 @@
         line-height: 1.75;
     }
 
-
     /* =========================================
-               HERO BUTTONS
-            ========================================= */
+           HERO BUTTONS
+        ========================================= */
 
     .kb-hero-actions {
         display: flex;
@@ -186,10 +198,9 @@
             transform: translateY(-2px);
         }
 
-
     /* =========================================
-               SECTION
-            ========================================= */
+           SECTION
+        ========================================= */
 
     .kb-section {
         margin-bottom: 32px;
@@ -216,10 +227,9 @@
         font-size: 12px;
     }
 
-
     /* =========================================
-               STATISTICS
-            ========================================= */
+           STATISTICS CARDS
+        ========================================= */
 
     .kb-stat-grid {
         display: grid;
@@ -288,10 +298,112 @@
         background: #cfe4d6;
     }
 
+    /* =========================================
+           ANALYTICS
+        ========================================= */
+
+    .kb-analytics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    .kb-chart-card {
+        background: rgba(255,255,255,0.92);
+        border: 1px solid #dfe9e2;
+        border-radius: 18px;
+        padding: 24px;
+        box-shadow: 0 6px 18px rgba(31, 77, 52, 0.05);
+    }
+
+    .kb-chart-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+
+    .kb-chart-title {
+        margin: 0;
+        color: #244536;
+        font-size: 16px;
+        font-weight: 750;
+    }
+
+    .kb-chart-subtitle {
+        margin: 4px 0 0;
+        color: #7b8780;
+        font-size: 11px;
+    }
+
+    .kb-chart-badge {
+        background: #e9f4ed;
+        color: #176b45;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 10px;
+        font-weight: 700;
+    }
+
+    .kb-chart-row {
+        margin-bottom: 19px;
+    }
+
+        .kb-chart-row:last-child {
+            margin-bottom: 0;
+        }
+
+    .kb-chart-label-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 7px;
+    }
+
+    .kb-chart-label {
+        color: #40594b;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .kb-chart-value {
+        color: #176b45;
+        font-size: 11px;
+        font-weight: 750;
+    }
+
+    .kb-chart-track {
+        width: 100%;
+        height: 9px;
+        background: #edf3ef;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .kb-chart-bar {
+        height: 100%;
+        background: linear-gradient( 90deg, #176b45, #53a878 );
+        border-radius: 20px;
+        min-width: 5px;
+        transition: width 0.4s ease;
+    }
+
+    .kb-chart-bar-disease {
+        background: linear-gradient( 90deg, #477b61, #83b89a );
+    }
+
+    .kb-empty-chart {
+        padding: 35px 15px;
+        text-align: center;
+        background: #f8faf9;
+        border-radius: 12px;
+        color: #7b8780;
+        font-size: 12px;
+    }
 
     /* =========================================
-               MANAGEMENT MODULES
-            ========================================= */
+           MANAGEMENT MODULES
+        ========================================= */
 
     .kb-module-grid {
         display: grid;
@@ -361,10 +473,9 @@
         line-height: 1.65;
     }
 
-
     /* =========================================
-               ACCOUNT & ACCESS
-            ========================================= */
+           ACCOUNT & ACCESS
+        ========================================= */
 
     .kb-system-info {
         display: flex;
@@ -416,18 +527,20 @@
         font-weight: 700;
     }
 
-
     /* =========================================
-               RESPONSIVE
-            ========================================= */
+           RESPONSIVE
+        ========================================= */
 
     @@media (max-width: 1100px) {
 
         .kb-stat-grid {
             grid-template-columns: repeat(3, 1fr);
         }
-    }
 
+        .kb-analytics-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 
     @@media (max-width: 850px) {
 
@@ -447,7 +560,6 @@
             grid-template-columns: repeat(2, 1fr);
         }
     }
-
 
     @@media (max-width: 600px) {
 
@@ -494,7 +606,6 @@
         }
     }
 
-
     @@media (max-width: 390px) {
 
         .kb-stat-grid {
@@ -508,7 +619,6 @@
 <div class="kb-dashboard">
 
     <div class="kb-dashboard-container">
-
 
         <!-- =====================================
              HERO
@@ -524,9 +634,7 @@
                 🌿
             </div>
 
-
             <div class="kb-hero-content">
-
 
                 <div class="kb-welcome">
 
@@ -540,14 +648,12 @@
 
                 </div>
 
-
                 <h1 class="kb-hero-title">
 
                     Agriculture
                     <span>Made Organized.</span>
 
                 </h1>
-
 
                 <p class="kb-hero-description">
 
@@ -556,7 +662,6 @@
                     soil and disease records in one connected system.
 
                 </p>
-
 
                 <div class="kb-hero-actions">
 
@@ -608,9 +713,7 @@
 
             </div>
 
-
             <div class="kb-stat-grid">
-
 
                 <!-- FARMERS -->
 
@@ -785,6 +888,169 @@
 
                 </div>
 
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             ANALYTICS & STATISTICS
+        ====================================== -->
+
+        <section class="kb-section">
+
+            <div class="kb-section-heading">
+
+                <div>
+
+                    <h2 class="kb-section-title">
+                        Agricultural Analytics
+                    </h2>
+
+                    <p class="kb-section-description">
+                        Statistics generated from current agricultural records
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="kb-analytics-grid">
+
+
+                <!-- CROP STATISTICS -->
+
+                <div class="kb-chart-card">
+
+                    <div class="kb-chart-header">
+
+                        <div>
+
+                            <h3 class="kb-chart-title">
+                                Crop Cultivation Statistics
+                            </h3>
+
+                            <p class="kb-chart-subtitle">
+                                Number of cultivation records by crop
+                            </p>
+
+                        </div>
+
+                        <div class="kb-chart-badge">
+                            CROPS
+                        </div>
+
+                    </div>
+
+
+                    @if (cropStatistics.Any())
+                    {
+                        foreach (var crop in cropStatistics)
+                        {
+                            var cropWidth =
+                                (crop.Count * 100.0) / maxCropCount;
+
+                            <div class="kb-chart-row">
+
+                                <div class="kb-chart-label-row">
+
+                                    <span class="kb-chart-label">
+                                        @crop.CropName
+                                    </span>
+
+                                    <span class="kb-chart-value">
+                                        @crop.Count
+                                    </span>
+
+                                </div>
+
+                                <div class="kb-chart-track">
+
+                                    <div class="kb-chart-bar"
+                                         style="width:@cropWidth%;">
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="kb-empty-chart">
+                            No cultivation statistics available yet.
+                        </div>
+                    }
+
+                </div>
+
+
+                <!-- DISEASE STATISTICS -->
+
+                <div class="kb-chart-card">
+
+                    <div class="kb-chart-header">
+
+                        <div>
+
+                            <h3 class="kb-chart-title">
+                                Disease Statistics
+                            </h3>
+
+                            <p class="kb-chart-subtitle">
+                                Recorded diseases across crops
+                            </p>
+
+                        </div>
+
+                        <div class="kb-chart-badge">
+                            DISEASES
+                        </div>
+
+                    </div>
+
+
+                    @if (diseaseStatistics.Any())
+                    {
+                        foreach (var disease in diseaseStatistics)
+                        {
+                            var diseaseWidth =
+                                (disease.Count * 100.0) / maxDiseaseCount;
+
+                            <div class="kb-chart-row">
+
+                                <div class="kb-chart-label-row">
+
+                                    <span class="kb-chart-label">
+                                        @disease.DiseaseName
+                                    </span>
+
+                                    <span class="kb-chart-value">
+                                        @disease.Count
+                                    </span>
+
+                                </div>
+
+                                <div class="kb-chart-track">
+
+                                    <div class="kb-chart-bar kb-chart-bar-disease"
+                                         style="width:@diseaseWidth%;">
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="kb-empty-chart">
+                            No disease statistics available yet.
+                        </div>
+                    }
+
+                </div>
 
             </div>
 
@@ -1041,13 +1307,11 @@
 
             </div>
 
-
             <div class="kb-role">
                 @role Account
             </div>
 
         </div>
-
 
     </div>
 

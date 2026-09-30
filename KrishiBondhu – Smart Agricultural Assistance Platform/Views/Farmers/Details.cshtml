@@ -1,334 +1,506 @@
 
-@model Farmer
+@model FarmerProfileViewModel
 
 @{
-    ViewData["Title"] = "Farmer Details";
+    ViewData["Title"] = "Farmer Profile";
 }
 
 <style>
-    .kb-details-page {
-        min-height: calc(100vh - 70px);
-        background: #f3f6f2;
-        padding: 38px 0 60px;
+    .profile-page {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
     }
 
-    .kb-details-container {
-        max-width: 850px;
-        margin: auto;
-        padding: 0 22px;
+    .profile-header {
+        background: linear-gradient(135deg, #198754, #157347);
+        color: white;
+        padding: 30px;
+        border-radius: 16px;
+        margin-bottom: 25px;
     }
 
-    .kb-back {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        color: #607068;
-        text-decoration: none;
-        font-size: 13px;
-        font-weight: 600;
+        .profile-header h1 {
+            margin: 0 0 8px;
+            font-size: 30px;
+        }
+
+        .profile-header p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+    .info-card,
+    .section-card {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 14px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .section-title {
+        color: #198754;
+        font-size: 21px;
+        font-weight: 700;
         margin-bottom: 20px;
     }
 
-        .kb-back:hover {
-            color: #176b45;
-        }
-
-    .kb-details-card {
-        background: white;
-        border: 1px solid #e2e9e3;
-        border-radius: 22px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(30, 60, 45, 0.06);
-    }
-
-    .kb-details-header {
-        background: linear-gradient(135deg, #176b45, #238052);
-        padding: 30px 32px;
-        color: white;
-    }
-
-    .kb-profile {
-        display: flex;
-        align-items: center;
-        gap: 17px;
-    }
-
-    .kb-profile-icon {
-        width: 62px;
-        height: 62px;
-        border-radius: 17px;
-        background: rgba(255,255,255,0.16);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 31px;
-    }
-
-    .kb-details-header h1 {
-        margin: 0;
-        font-size: 26px;
-        font-weight: 750;
-    }
-
-    .kb-details-header p {
-        margin: 5px 0 0;
-        font-size: 13px;
-        color: rgba(255,255,255,0.82);
-    }
-
-    .kb-details-body {
-        padding: 30px 32px;
-    }
-
-    .kb-section-title {
-        margin-bottom: 18px;
-        color: #294638;
-        font-size: 16px;
-        font-weight: 700;
-    }
-
-    .kb-info-grid {
+    .info-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
     }
 
-    .kb-info-item {
-        background: #f8faf8;
-        border: 1px solid #e7ece8;
-        border-radius: 12px;
-        padding: 16px;
+    .info-item {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
     }
 
-    .kb-info-label {
-        color: #7a8780;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 7px;
+    .info-label {
+        font-size: 13px;
+        color: #6c757d;
+        margin-bottom: 5px;
     }
 
-    .kb-info-value {
-        color: #30483b;
-        font-size: 14px;
+    .info-value {
+        font-size: 16px;
         font-weight: 600;
-        word-break: break-word;
+        color: #212529;
     }
 
-    .kb-actions {
-        display: flex;
-        gap: 10px;
-        padding-top: 25px;
-        margin-top: 25px;
-        border-top: 1px solid #edf1ee;
+    .table-wrapper {
+        overflow-x: auto;
     }
 
-    .kb-edit-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        text-decoration: none;
-        background: #176b45;
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th {
+        background: #198754;
         color: white;
-        padding: 11px 21px;
-        border-radius: 9px;
-        font-size: 13px;
-        font-weight: 650;
-        transition: 0.2s;
+        padding: 12px;
+        text-align: left;
     }
 
-        .kb-edit-btn:hover {
-            background: #125637;
-            color: white;
-            transform: translateY(-1px);
-        }
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #dee2e6;
+    }
 
-    .kb-list-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+    tr:hover {
+        background: #f8f9fa;
+    }
+
+    .empty-message {
+        background: #f8f9fa;
+        padding: 18px;
+        border-radius: 10px;
+        color: #6c757d;
+        text-align: center;
+    }
+
+    .back-button {
+        display: inline-block;
+        background: #6c757d;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 8px;
         text-decoration: none;
-        background: #f0f3f1;
-        color: #59675f;
-        padding: 10px 19px;
-        border-radius: 9px;
-        font-size: 13px;
-        font-weight: 650;
-        transition: 0.2s;
+        margin-top: 5px;
     }
 
-        .kb-list-btn:hover {
-            background: #e4e9e5;
-            color: #3d4b43;
+        .back-button:hover {
+            background: #5c636a;
+            color: white;
         }
 
-    @@media (max-width: 650px) {
-
-        .kb-details-page {
-            padding-top: 24px;
-        }
-
-        .kb-details-container {
-            padding: 0 14px;
-        }
-
-        .kb-details-header {
-            padding: 24px;
-        }
-
-        .kb-details-body {
-            padding: 23px;
-        }
-
-        .kb-profile-icon {
-            width: 52px;
-            height: 52px;
-            font-size: 26px;
-        }
-
-        .kb-details-header h1 {
-            font-size: 22px;
-        }
-
-        .kb-info-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .kb-actions {
-            flex-direction: column;
-        }
-
-        .kb-edit-btn,
-        .kb-list-btn {
-            width: 100%;
-        }
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
     }
+
+    .stat-card {
+        background: #ffffff;
+        border: 1px solid #dee2e6;
+        border-radius: 14px;
+        padding: 22px;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .stat-number {
+        font-size: 30px;
+        font-weight: 700;
+        color: #198754;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 12px;
+        margin-top: 5px;
+        flex-wrap: wrap;
+    }
+
+    .pdf-button {
+        display: inline-block;
+        background: #198754;
+        color: white;
+        padding: 10px 18px;
+        border-radius: 8px;
+        text-decoration: none;
+    }
+
+        .pdf-button:hover {
+            background: #157347;
+            color: white;
+        }
 </style>
 
-<div class="kb-details-page">
+<div class="profile-page">
 
-    <div class="kb-details-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <h1>Farmer Profile</h1>
+        <p>
+            Agricultural information and management details
+            for <strong>@Model.Farmer.Name</strong>
+        </p>
+    </div>
 
-        <a asp-action="Index" class="kb-back">
-            ← Back to Farmers
-        </a>
+    <!-- Profile Statistics -->
+    <div class="profile-stats">
 
-        <div class="kb-details-card">
-
-            <!-- HEADER -->
-
-            <div class="kb-details-header">
-
-                <div class="kb-profile">
-
-                    <div class="kb-profile-icon">
-                        👨‍🌾
-                    </div>
-
-                    <div>
-
-                        <h1>
-                            @Model.Name
-                        </h1>
-
-                        <p>
-                            Farmer Profile & Information
-                        </p>
-
-                    </div>
-
-                </div>
-
+        <div class="stat-card">
+            <div class="stat-number">
+                @Model.Farms.Count
             </div>
 
+            <div class="stat-label">
+                Total Farms
+            </div>
+        </div>
 
-            <!-- DETAILS -->
+        <div class="stat-card">
+            <div class="stat-number">
+                @Model.Cultivations.Count
+            </div>
 
-            <div class="kb-details-body">
+            <div class="stat-label">
+                Cultivation Records
+            </div>
+        </div>
 
-                <div class="kb-section-title">
-                    Farmer Information
+        <div class="stat-card">
+            <div class="stat-number">
+                @Model.SoilTests.Count
+            </div>
+
+            <div class="stat-label">
+                Soil Tests
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Farmer Information -->
+    <div class="info-card">
+
+        <div class="section-title">
+            Farmer Information
+        </div>
+
+        <div class="info-grid">
+
+            <div class="info-item">
+                <div class="info-label">
+                    Farmer ID
                 </div>
 
-                <div class="kb-info-grid">
+                <div class="info-value">
+                    @Model.Farmer.FarmerId
+                </div>
+            </div>
 
-                    <div class="kb-info-item">
-
-                        <div class="kb-info-label">
-                            Farmer Name
-                        </div>
-
-                        <div class="kb-info-value">
-                            @Model.Name
-                        </div>
-
-                    </div>
-
-
-                    <div class="kb-info-item">
-
-                        <div class="kb-info-label">
-                            Phone Number
-                        </div>
-
-                        <div class="kb-info-value">
-                            @Model.Phone
-                        </div>
-
-                    </div>
-
-
-                    <div class="kb-info-item">
-
-                        <div class="kb-info-label">
-                            Address
-                        </div>
-
-                        <div class="kb-info-value">
-                            @Model.Address
-                        </div>
-
-                    </div>
-
-
-                    <div class="kb-info-item">
-
-                        <div class="kb-info-label">
-                            Email Address
-                        </div>
-
-                        <div class="kb-info-value">
-                            @Model.Email
-                        </div>
-
-                    </div>
-
+            <div class="info-item">
+                <div class="info-label">
+                    Name
                 </div>
 
+                <div class="info-value">
+                    @Model.Farmer.Name
+                </div>
+            </div>
 
-                <!-- ACTIONS -->
-
-                <div class="kb-actions">
-
-                    <a asp-action="Edit"
-                       asp-route-id="@Model?.FarmerId"
-                       class="kb-edit-btn">
-                        ✏ Edit Farmer
-                    </a>
-
-                    <a asp-action="Index"
-                       class="kb-list-btn">
-                        ← Back to List
-                    </a>
-
+            <div class="info-item">
+                <div class="info-label">
+                    Phone
                 </div>
 
+                <div class="info-value">
+                    @Model.Farmer.Phone
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">
+                    Email
+                </div>
+
+                <div class="info-value">
+                    @Model.Farmer.Email
+                </div>
+            </div>
+
+            <div class="info-item">
+                <div class="info-label">
+                    Address
+                </div>
+
+                <div class="info-value">
+                    @Model.Farmer.Address
+                </div>
             </div>
 
         </div>
 
     </div>
 
+    <!-- Farms -->
+    <div class="section-card">
+
+        <div class="section-title">
+            Farms
+        </div>
+
+        @if (Model.Farms != null && Model.Farms.Any())
+        {
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Farm ID</th>
+                            <th>Farm Name</th>
+                            <th>Location</th>
+                            <th>Area</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var farm in Model.Farms)
+                        {
+                            <tr>
+
+                                <td>
+                                    @farm.FarmId
+                                </td>
+
+                                <td>
+                                    @farm.FarmName
+                                </td>
+
+                                <td>
+                                    @farm.Location
+                                </td>
+
+                                <td>
+                                    @farm.Area
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="empty-message">
+                No farm information available.
+            </div>
+        }
+
+    </div>
+
+    <!-- Cultivation Records -->
+    <div class="section-card">
+
+        <div class="section-title">
+            Cultivation Records
+        </div>
+
+        @if (Model.Cultivations != null && Model.Cultivations.Any())
+        {
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Farm</th>
+                            <th>Crop</th>
+                            <th>Planting Date</th>
+                            <th>Harvest Date</th>
+                            <th>Yield</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var cultivation in Model.Cultivations)
+                        {
+                            <tr>
+
+                                <td>
+                                    @cultivation.Farm.FarmName
+                                </td>
+
+                                <td>
+                                    @cultivation.Crop.CropName
+                                </td>
+
+                                <td>
+                                    @cultivation.PlantingDate.ToString("dd MMM yyyy")
+                                </td>
+
+                                <td>
+                                    @if (cultivation.HarvestDate.HasValue)
+                                    {
+                                        @cultivation.HarvestDate.Value.ToString("dd MMM yyyy")
+                                    }
+                                    else
+                                    {
+                                        <span>Not harvested</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @cultivation.Yield
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="empty-message">
+                No cultivation records available.
+            </div>
+        }
+
+    </div>
+
+    <!-- Soil Test Records -->
+    <div class="section-card">
+
+        <div class="section-title">
+            Soil Test Records
+        </div>
+
+        @if (Model.SoilTests != null && Model.SoilTests.Any())
+        {
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Farm</th>
+                            <th>Test Date</th>
+                            <th>pH</th>
+                            <th>Nitrogen</th>
+                            <th>Phosphorus</th>
+                            <th>Potassium</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var soil in Model.SoilTests)
+                        {
+                            <tr>
+
+                                <td>
+                                    @soil.Farm.FarmName
+                                </td>
+
+                                <td>
+                                    @soil.TestDate.ToString("dd MMM yyyy")
+                                </td>
+
+                                <td>
+                                    @soil.PH
+                                </td>
+
+                                <td>
+                                    @soil.Nitrogen
+                                </td>
+
+                                <td>
+                                    @soil.Phosphorus
+                                </td>
+
+                                <td>
+                                    @soil.Potassium
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+        else
+        {
+            <div class="empty-message">
+                No soil test records available.
+            </div>
+        }
+
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+
+        <a asp-action="Index" class="back-button">
+            ← Back to Farmers
+        </a>
+
+        <a asp-controller="Reports"
+           asp-action="FarmerReport"
+           asp-route-id="@Model.Farmer.FarmerId"
+           class="pdf-button">
+            📄 Generate PDF
+        </a>
+
+    </div>
+
 </div>
-```
+

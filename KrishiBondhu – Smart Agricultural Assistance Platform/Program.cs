@@ -1,6 +1,10 @@
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using QuestPDF.Infrastructure;
 using KrishiBondhu___Smart_Agricultural_Assistance_Platform.Middleware;
+
+QuestPDF.Settings.License = LicenseType.Evaluation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +12,7 @@ builder.Services.AddSession();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddScoped<IFarmerService, FarmerService>();
 builder.Services.AddScoped<ICropService, CropService>();
 builder.Services.AddScoped<ICultivationService, CultivationService>();
@@ -15,6 +20,8 @@ builder.Services.AddScoped<ISoilTestService, SoilTestService>();
 builder.Services.AddScoped<IDiseaseService, DiseaseService>();
 builder.Services.AddScoped<IFarmService, FarmService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+
+builder.Services.AddScoped<IReportService, ReportService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
@@ -48,3 +55,4 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.Run();
+

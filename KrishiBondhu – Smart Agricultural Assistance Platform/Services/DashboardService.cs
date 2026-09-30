@@ -38,4 +38,32 @@ public class DashboardService : IDashboardService
     {
         return await _context.Diseases.CountAsync();
     }
+
+    public async Task<List<CropStatistics>> GetCropStatisticsAsync()
+    {
+        return await _context.Cultivations
+            .Include(c => c.Crop)
+            .GroupBy(c => c.Crop.CropName)
+            .Select(g => new CropStatistics
+            {
+                CropName = g.Key,
+                Count = g.Count()
+            })
+            .OrderByDescending(x => x.Count)
+            .ToListAsync();
+    }
+
+    public async Task<List<DiseaseStatistics>> GetDiseaseStatisticsAsync()
+    {
+        return await _context.Diseases
+            .Include(d => d.Crop)
+            .GroupBy(d => d.DiseaseName)
+            .Select(g => new DiseaseStatistics
+            {
+                DiseaseName = g.Key,
+                Count = g.Count()
+            })
+            .OrderByDescending(x => x.Count)
+            .ToListAsync();
+    }
 }
