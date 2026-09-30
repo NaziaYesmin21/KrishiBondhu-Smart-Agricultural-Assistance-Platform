@@ -33,10 +33,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
 
             try
             {
-                // ============================================
                 // 1. Get Crop Information
-                // ============================================
-
                 var crops = await _context.Crops
                     .AsNoTracking()
                     .Select(c => new
@@ -47,11 +44,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                     })
                     .ToListAsync();
 
-
-                // ============================================
                 // 2. Get Soil Test Information
-                // ============================================
-
                 var soilTests = await _context.SoilTests
                     .AsNoTracking()
                     .Select(s => new
@@ -65,11 +58,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                     })
                     .ToListAsync();
 
-
-                // ============================================
                 // 3. Get Disease Information
-                // ============================================
-
                 var diseases = await _context.Diseases
                     .AsNoTracking()
                     .Select(d => new
@@ -81,11 +70,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                     })
                     .ToListAsync();
 
-
-                // ============================================
                 // 4. Get Cultivation Information
-                // ============================================
-
                 var cultivations = await _context.Cultivations
                     .AsNoTracking()
                     .Include(c => c.Crop)
@@ -100,11 +85,7 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                     })
                     .ToListAsync();
 
-
-                // ============================================
                 // 5. Prepare Database Context
-                // ============================================
-
                 var cropContext = crops.Any()
                     ? string.Join("\n",
                         crops.Select(c =>
@@ -112,7 +93,6 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                             $"Season: {c.Season}, " +
                             $"Description: {c.Description}"))
                     : "No crop records available.";
-
 
                 var soilContext = soilTests.Any()
                     ? string.Join("\n",
@@ -125,7 +105,6 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                             $"Potassium: {s.Potassium}"))
                     : "No soil test records available.";
 
-
                 var diseaseContext = diseases.Any()
                     ? string.Join("\n",
                         diseases.Select(d =>
@@ -135,7 +114,6 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                             $"Treatment: {d.Treatment}"))
                     : "No disease records available.";
 
-
                 var cultivationContext = cultivations.Any()
                     ? string.Join("\n",
                         cultivations.Select(c =>
@@ -144,15 +122,13 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                             $"Crop: {c.CropName}, " +
                             $"Planting Date: {c.PlantingDate:dd MMM yyyy}, " +
                             $"Harvest Date: " +
-                            $"{(c.HarvestDate.HasValue ? c.HarvestDate.Value.ToString("dd MMM yyyy") : "Not specified")}, " +
+                            $"{(c.HarvestDate.HasValue
+                                ? c.HarvestDate.Value.ToString("dd MMM yyyy")
+                                : "Not specified")}, " +
                             $"Yield: {c.Yield}"))
                     : "No cultivation records available.";
 
-
-                // ============================================
                 // 6. Create AI Prompt
-                // ============================================
-
                 var prompt = $"""
                     You are the AI Agricultural Assistant of
                     KrishiBondhu – Smart Agricultural Assistance Platform.
@@ -170,13 +146,11 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
 
                     {cropContext}
 
-
                     ==============================
                     SOIL TEST INFORMATION
                     ==============================
 
                     {soilContext}
-
 
                     ==============================
                     DISEASE INFORMATION
@@ -184,13 +158,11 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
 
                     {diseaseContext}
 
-
                     ==============================
                     CULTIVATION INFORMATION
                     ==============================
 
                     {cultivationContext}
-
 
                     ==============================
                     FARMER QUESTION
@@ -198,38 +170,27 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
 
                     {question}
 
-
                     ==============================
                     RESPONSE GUIDELINES
                     ==============================
 
                     1. Answer the farmer's actual question directly.
-
                     2. Use the KrishiBondhu database information
                        when it is relevant.
-
                     3. If database information is not sufficient,
                        clearly say that the available records are
                        not enough and provide general guidance.
-
                     4. Use simple language.
-
                     5. If the question is in Bangla, answer in Bangla.
-
                     6. If the question is in English, answer in English.
-
                     7. For disease-related questions, mention possible
                        symptoms and appropriate management steps.
-
                     8. For soil-related questions, consider pH,
                        Nitrogen, Phosphorus and Potassium values
                        when relevant.
-
                     9. Do not invent database records.
-
                     10. Do not claim that a disease is definitely
                         present based only on a description or symptom.
-
                     11. For pesticides or chemicals, advise the farmer
                         to follow the product label and consult a
                         qualified local agricultural professional
@@ -238,49 +199,102 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                     Give a concise but useful answer.
                     """;
 
-
-                // ============================================
-                // 7. Call Gemini
-                // ============================================
-
+                // 7. Gemini request with retry
                 using var cts =
                     new CancellationTokenSource(
-                        TimeSpan.FromSeconds(30));
+                        TimeSpan.FromSeconds(90));
 
-                var response =
-                    await _client.Models.GenerateContentAsync(
-                        model: "gemini-3.7-flash",
-                        contents: prompt,
-                        cancellationToken: cts.Token);
+                Exception? lastException = null;
 
-
-                // ============================================
-                // 8. Extract AI Response
-                // ============================================
-
-                var answer =
-                    response.Candidates?
-                        .FirstOrDefault()?
-                        .Content?
-                        .Parts?
-                        .FirstOrDefault()?
-                        .Text;
-
-
-                if (string.IsNullOrWhiteSpace(answer))
+                int[] retryDelays =
                 {
-                    return "Sorry, I could not generate an answer right now.";
+                    2000,
+                    5000,
+                    10000
+                };
+
+                for (int attempt = 0; attempt <= retryDelays.Length; attempt++)
+                {
+                    try
+                    {
+                        var response =
+                            await _client.Models.GenerateContentAsync(
+                                model: "gemini-3.7-flash",
+                                contents: prompt,
+                                cancellationToken: cts.Token);
+
+                        // 8. Extract AI Response
+                        var answer =
+                            response.Candidates?
+                                .FirstOrDefault()?
+                                .Content?
+                                .Parts?
+                                .FirstOrDefault()?
+                                .Text;
+
+                        if (!string.IsNullOrWhiteSpace(answer))
+                        {
+                            return answer;
+                        }
+
+                        return "Sorry, I could not generate an answer right now.";
+                    }
+                    catch (Exception ex)
+                    {
+                        lastException = ex;
+
+                        var errorMessage =
+                            ex.Message.ToLowerInvariant();
+
+                        bool temporaryError =
+                            errorMessage.Contains("high demand") ||
+                            errorMessage.Contains("503") ||
+                            errorMessage.Contains("unavailable") ||
+                            errorMessage.Contains("429") ||
+                            errorMessage.Contains("resource exhausted");
+
+                        if (!temporaryError ||
+                            attempt >= retryDelays.Length)
+                        {
+                            break;
+                        }
+
+                        await Task.Delay(
+                            retryDelays[attempt],
+                            cts.Token);
+                    }
                 }
 
-                return answer;
+                if (lastException != null)
+                {
+                    var errorMessage =
+                        lastException.Message.ToLowerInvariant();
+
+                    if (errorMessage.Contains("high demand") ||
+                        errorMessage.Contains("503") ||
+                        errorMessage.Contains("unavailable"))
+                    {
+                        return "The AI service is temporarily busy. Please try again in a few moments.";
+                    }
+
+                    if (errorMessage.Contains("429") ||
+                        errorMessage.Contains("resource exhausted"))
+                    {
+                        return "The AI service has temporarily reached its request limit. Please try again later.";
+                    }
+
+                    return "Sorry, the AI assistant is temporarily unavailable.";
+                }
+
+                return "Sorry, I could not generate an answer right now.";
             }
             catch (OperationCanceledException)
             {
                 return "The AI request took too long. Please try again.";
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return "AI ERROR: " + ex.Message;
+                return "Sorry, the AI assistant is temporarily unavailable.";
             }
         }
     }
