@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "KrishiBondhu Dashboard";
 
     var username = ViewBag.Username as string ?? "Guest";
@@ -41,14 +40,16 @@
 
     .kb-dashboard {
         min-height: calc(100vh - 135px);
-        padding: 34px 0 60px;
+        padding: 30px 0 58px;
+        background: #f7faf8;
     }
 
     .kb-dashboard-container {
-        max-width: 1280px;
+        max-width: 1320px;
         margin: auto;
-        padding: 0 22px;
+        padding: 0 24px;
     }
+
 
     /* =========================================
            HERO
@@ -57,14 +58,14 @@
     .kb-dashboard-hero {
         position: relative;
         overflow: hidden;
-        min-height: 310px;
-        border-radius: 26px;
-        padding: 42px 46px;
+        min-height: 285px;
+        border-radius: 24px;
+        padding: 40px 46px;
         display: flex;
         align-items: center;
-        margin-bottom: 32px;
+        margin-bottom: 30px;
         background: linear-gradient(115deg, #103824 0%, #155b3a 52%, #23794e 100%);
-        box-shadow: 0 18px 40px rgba(20, 65, 43, 0.16);
+        box-shadow: 0 16px 34px rgba(20, 65, 43, 0.14);
     }
 
     .kb-hero-circle-one {
@@ -90,8 +91,8 @@
     .kb-hero-leaf {
         position: absolute;
         right: 75px;
-        bottom: 42px;
-        font-size: 86px;
+        bottom: 38px;
+        font-size: 82px;
         opacity: 0.13;
         transform: rotate(-12deg);
     }
@@ -99,8 +100,9 @@
     .kb-hero-content {
         position: relative;
         z-index: 2;
-        max-width: 720px;
+        max-width: 750px;
     }
+
 
     /* =========================================
            WELCOME
@@ -110,14 +112,14 @@
         display: inline-flex;
         align-items: center;
         gap: 9px;
-        padding: 7px 13px;
+        padding: 8px 14px;
         border-radius: 30px;
         background: rgba(255,255,255,0.09);
         border: 1px solid rgba(255,255,255,0.13);
-        color: rgba(255,255,255,0.88);
-        font-size: 11px;
+        color: rgba(255,255,255,0.90);
+        font-size: 12px;
         font-weight: 600;
-        margin-bottom: 18px;
+        margin-bottom: 17px;
     }
 
     .kb-online-dot {
@@ -127,6 +129,7 @@
         background: #8de2ae;
     }
 
+
     /* =========================================
            HERO TITLE
         ========================================= */
@@ -134,10 +137,10 @@
     .kb-hero-title {
         margin: 0;
         color: white;
-        font-size: 43px;
+        font-size: 42px;
         line-height: 1.12;
         font-weight: 750;
-        letter-spacing: -1.2px;
+        letter-spacing: -1px;
     }
 
         .kb-hero-title span {
@@ -145,12 +148,13 @@
         }
 
     .kb-hero-description {
-        margin: 16px 0 24px;
-        max-width: 640px;
-        color: rgba(255,255,255,0.74);
-        font-size: 14px;
-        line-height: 1.75;
+        margin: 15px 0 23px;
+        max-width: 680px;
+        color: rgba(255,255,255,0.78);
+        font-size: 15px;
+        line-height: 1.7;
     }
+
 
     /* =========================================
            HERO BUTTONS
@@ -158,22 +162,26 @@
 
     .kb-hero-actions {
         display: flex;
-        gap: 10px;
+        gap: 11px;
         flex-wrap: wrap;
     }
 
-    .kb-hero-primary {
+    .kb-hero-primary,
+    .kb-hero-secondary {
         display: inline-flex;
         align-items: center;
         gap: 7px;
-        padding: 10px 17px;
-        background: #ffffff;
-        color: #155b3a;
+        padding: 11px 18px;
         border-radius: 9px;
         text-decoration: none;
-        font-size: 12px;
-        font-weight: 700;
+        font-size: 13px;
         transition: 0.2s;
+    }
+
+    .kb-hero-primary {
+        background: #ffffff;
+        color: #155b3a;
+        font-weight: 700;
     }
 
         .kb-hero-primary:hover {
@@ -183,18 +191,10 @@
         }
 
     .kb-hero-secondary {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        padding: 10px 17px;
         background: rgba(255,255,255,0.08);
         border: 1px solid rgba(255,255,255,0.18);
         color: white;
-        border-radius: 9px;
-        text-decoration: none;
-        font-size: 12px;
         font-weight: 650;
-        transition: 0.2s;
     }
 
         .kb-hero-secondary:hover {
@@ -203,12 +203,13 @@
             transform: translateY(-2px);
         }
 
+
     /* =========================================
            SECTION
         ========================================= */
 
     .kb-section {
-        margin-bottom: 32px;
+        margin-bottom: 31px;
     }
 
     .kb-section-heading {
@@ -221,16 +222,18 @@
     .kb-section-title {
         margin: 0;
         color: #173d2b;
-        font-size: 21px;
+        font-size: 22px;
         font-weight: 750;
         letter-spacing: -0.3px;
     }
 
     .kb-section-description {
-        margin: 4px 0 0;
-        color: #7b8981;
-        font-size: 12px;
+        margin: 5px 0 0;
+        color: #74827a;
+        font-size: 13px;
+        line-height: 1.5;
     }
+
 
     /* =========================================
            STATISTICS CARDS
@@ -239,15 +242,16 @@
     .kb-stat-grid {
         display: grid;
         grid-template-columns: repeat(6, 1fr);
-        gap: 13px;
+        gap: 12px;
     }
 
     .kb-stat {
         position: relative;
-        background: rgba(255,255,255,0.88);
+        background: rgba(255,255,255,0.95);
         border: 1px solid #dfe9e2;
-        border-radius: 16px;
-        padding: 19px;
+        border-radius: 14px;
+        padding: 15px 16px 17px;
+        min-height: 126px;
         overflow: hidden;
         transition: 0.22s;
     }
@@ -255,30 +259,30 @@
         .kb-stat:hover {
             transform: translateY(-3px);
             border-color: #c5dccd;
-            box-shadow: 0 12px 25px rgba(31, 77, 52, 0.08);
+            box-shadow: 0 10px 22px rgba(31, 77, 52, 0.08);
         }
 
     .kb-stat-top {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 18px;
+        margin-bottom: 12px;
     }
 
     .kb-stat-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 11px;
+        width: 37px;
+        height: 37px;
+        border-radius: 10px;
         display: flex;
         align-items: center;
         justify-content: center;
         background: #e9f4ed;
-        font-size: 19px;
+        font-size: 17px;
     }
 
     .kb-stat-arrow {
         color: #a2aea7;
-        font-size: 14px;
+        font-size: 13px;
     }
 
     .kb-stat-number {
@@ -289,9 +293,11 @@
     }
 
     .kb-stat-label {
-        color: #78857e;
-        font-size: 11px;
-        margin-top: 7px;
+        color: #66766d;
+        font-size: 13px;
+        font-weight: 550;
+        margin-top: 8px;
+        line-height: 1.4;
     }
 
     .kb-stat-bottom {
@@ -303,6 +309,7 @@
         background: #cfe4d6;
     }
 
+
     /* =========================================
            ANALYTICS
         ========================================= */
@@ -310,22 +317,22 @@
     .kb-analytics-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 18px;
+        gap: 17px;
     }
 
     .kb-chart-card {
-        background: rgba(255,255,255,0.92);
+        background: rgba(255,255,255,0.95);
         border: 1px solid #dfe9e2;
-        border-radius: 18px;
-        padding: 24px;
-        box-shadow: 0 6px 18px rgba(31, 77, 52, 0.05);
+        border-radius: 17px;
+        padding: 22px;
+        box-shadow: 0 5px 16px rgba(31, 77, 52, 0.05);
     }
 
     .kb-chart-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 24px;
+        margin-bottom: 23px;
     }
 
     .kb-chart-title {
@@ -336,22 +343,22 @@
     }
 
     .kb-chart-subtitle {
-        margin: 4px 0 0;
-        color: #7b8780;
-        font-size: 11px;
+        margin: 5px 0 0;
+        color: #748078;
+        font-size: 12px;
     }
 
     .kb-chart-badge {
         background: #e9f4ed;
         color: #176b45;
-        padding: 6px 10px;
+        padding: 7px 11px;
         border-radius: 20px;
         font-size: 10px;
         font-weight: 700;
     }
 
     .kb-chart-row {
-        margin-bottom: 19px;
+        margin-bottom: 18px;
     }
 
         .kb-chart-row:last-child {
@@ -367,13 +374,13 @@
 
     .kb-chart-label {
         color: #40594b;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 600;
     }
 
     .kb-chart-value {
         color: #176b45;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: 750;
     }
 
@@ -402,20 +409,83 @@
         text-align: center;
         background: #f8faf9;
         border-radius: 12px;
-        color: #7b8780;
-        font-size: 12px;
+        color: #748078;
+        font-size: 13px;
     }
+
+
+    /* =========================================
+           FARM PERFORMANCE SNAPSHOT
+        ========================================= */
+
+    .kb-performance-card {
+        background: rgba(255,255,255,0.95);
+        border: 1px solid #dfe9e2;
+        border-radius: 17px;
+        padding: 20px;
+        box-shadow: 0 5px 16px rgba(31, 77, 52, 0.05);
+    }
+
+    .kb-performance-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+    }
+
+    .kb-performance-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 15px;
+        background: #f8faf9;
+        border: 1px solid #e3ebe5;
+        border-radius: 13px;
+        transition: 0.2s;
+    }
+
+        .kb-performance-item:hover {
+            transform: translateY(-2px);
+            border-color: #c8ddd0;
+            box-shadow: 0 7px 16px rgba(31, 77, 52, 0.06);
+        }
+
+    .kb-performance-icon {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0;
+        border-radius: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e8f3ec;
+        font-size: 18px;
+    }
+
+    .kb-performance-label {
+        color: #748078;
+        font-size: 11px;
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+
+    .kb-performance-value {
+        color: #173d2b;
+        font-size: 21px;
+        font-weight: 750;
+        line-height: 1;
+    }
+
 
     /* =========================================
            HARVEST REMINDER
         ========================================= */
 
     .kb-harvest-card {
-        background: rgba(255,255,255,0.92);
+        background: rgba(255,255,255,0.95);
         border: 1px solid #dfe9e2;
-        border-radius: 18px;
-        padding: 20px;
-        box-shadow: 0 6px 18px rgba(31, 77, 52, 0.05);
+        border-radius: 17px;
+        padding: 19px;
+        box-shadow: 0 5px 16px rgba(31, 77, 52, 0.05);
     }
 
     .kb-harvest-item {
@@ -423,11 +493,11 @@
         justify-content: space-between;
         align-items: center;
         gap: 15px;
-        padding: 16px;
+        padding: 15px;
         margin-bottom: 10px;
         background: #f8faf9;
         border: 1px solid #dfe9e2;
-        border-radius: 13px;
+        border-radius: 12px;
     }
 
         .kb-harvest-item:last-child {
@@ -441,8 +511,8 @@
     }
 
     .kb-harvest-id {
-        color: #7b8780;
-        font-size: 11px;
+        color: #748078;
+        font-size: 12px;
         margin-top: 5px;
     }
 
@@ -451,19 +521,20 @@
         color: #176b45;
         padding: 8px 13px;
         border-radius: 20px;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 700;
         white-space: nowrap;
     }
 
     .kb-harvest-empty {
-        padding: 28px 15px;
+        padding: 27px 15px;
         text-align: center;
         background: #f8faf9;
         border-radius: 12px;
-        color: #7b8780;
-        font-size: 12px;
+        color: #748078;
+        font-size: 13px;
     }
+
 
     /* =========================================
            MANAGEMENT MODULES
@@ -472,16 +543,16 @@
     .kb-module-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
+        gap: 13px;
     }
 
     .kb-module {
         position: relative;
         display: block;
-        background: rgba(255,255,255,0.90);
+        background: rgba(255,255,255,0.95);
         border: 1px solid #dfe9e2;
-        border-radius: 17px;
-        padding: 22px;
+        border-radius: 15px;
+        padding: 20px;
         text-decoration: none;
         overflow: hidden;
         transition: 0.22s;
@@ -491,30 +562,30 @@
             color: inherit;
             transform: translateY(-4px);
             border-color: #bed8c8;
-            box-shadow: 0 14px 28px rgba(31, 77, 52, 0.08);
+            box-shadow: 0 12px 25px rgba(31, 77, 52, 0.08);
         }
 
     .kb-module-top {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 17px;
+        margin-bottom: 14px;
     }
 
     .kb-module-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
+        width: 42px;
+        height: 42px;
+        border-radius: 11px;
         display: flex;
         align-items: center;
         justify-content: center;
         background: #eaf5ee;
-        font-size: 21px;
+        font-size: 20px;
     }
 
     .kb-module-arrow {
         color: #a3aea7;
-        font-size: 18px;
+        font-size: 17px;
         transition: 0.2s;
     }
 
@@ -524,18 +595,19 @@
     }
 
     .kb-module h3 {
-        margin: 0 0 6px;
+        margin: 0 0 7px;
         color: #244536;
-        font-size: 15px;
+        font-size: 17px;
         font-weight: 700;
     }
 
     .kb-module p {
         margin: 0;
-        color: #7b8780;
-        font-size: 11px;
-        line-height: 1.65;
+        color: #718078;
+        font-size: 13px;
+        line-height: 1.6;
     }
+
 
     /* =========================================
            ACCOUNT & ACCESS
@@ -548,9 +620,9 @@
         gap: 20px;
         background: #dfeee4;
         border: 1px solid #cfe2d5;
-        border-radius: 16px;
-        padding: 18px 21px;
-        margin-top: 31px;
+        border-radius: 15px;
+        padding: 17px 20px;
+        margin-top: 30px;
     }
 
     .kb-system-left {
@@ -560,42 +632,43 @@
     }
 
     .kb-system-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: 11px;
+        width: 39px;
+        height: 39px;
+        border-radius: 10px;
         background: #cce4d3;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        font-size: 17px;
     }
 
     .kb-system-title {
         color: #244536;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 700;
         margin-bottom: 3px;
     }
 
     .kb-system-text {
         color: #6e7e74;
-        font-size: 10px;
+        font-size: 11px;
     }
 
     .kb-role {
         background: #176b45;
         color: white;
-        padding: 7px 12px;
+        padding: 8px 13px;
         border-radius: 20px;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 700;
     }
+
 
     /* =========================================
            RESPONSIVE
         ========================================= */
 
-    @@media (max-width: 1100px) {
+    @@media (max-width: 1200px) {
 
         .kb-stat-grid {
             grid-template-columns: repeat(3, 1fr);
@@ -604,26 +677,32 @@
         .kb-analytics-grid {
             grid-template-columns: 1fr;
         }
+
+        .kb-performance-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
+
 
     @@media (max-width: 850px) {
 
         .kb-dashboard {
-            padding-top: 24px;
+            padding-top: 22px;
         }
 
         .kb-dashboard-hero {
-            padding: 36px 30px;
+            padding: 34px 28px;
         }
 
         .kb-hero-title {
-            font-size: 35px;
+            font-size: 34px;
         }
 
         .kb-module-grid {
             grid-template-columns: repeat(2, 1fr);
         }
     }
+
 
     @@media (max-width: 600px) {
 
@@ -633,12 +712,12 @@
 
         .kb-dashboard-hero {
             min-height: auto;
-            padding: 29px 22px;
-            border-radius: 20px;
+            padding: 27px 21px;
+            border-radius: 19px;
         }
 
         .kb-hero-title {
-            font-size: 29px;
+            font-size: 28px;
         }
 
         .kb-hero-description {
@@ -648,16 +727,20 @@
         .kb-hero-leaf {
             right: 15px;
             bottom: 15px;
-            font-size: 60px;
+            font-size: 58px;
         }
 
         .kb-stat-grid {
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 9px;
         }
 
         .kb-stat {
-            padding: 16px;
+            padding: 14px;
+        }
+
+        .kb-performance-grid {
+            grid-template-columns: 1fr;
         }
 
         .kb-module-grid {
@@ -675,6 +758,7 @@
         }
     }
 
+
     @@media (max-width: 390px) {
 
         .kb-stat-grid {
@@ -688,6 +772,7 @@
 <div class="kb-dashboard">
 
     <div class="kb-dashboard-container">
+
 
         <!-- =====================================
              HERO
@@ -782,7 +867,11 @@
 
             </div>
 
+
             <div class="kb-stat-grid">
+
+
+                <!-- FARMERS -->
 
                 <div class="kb-stat">
 
@@ -811,6 +900,8 @@
                 </div>
 
 
+                <!-- FARMS -->
+
                 <div class="kb-stat">
 
                     <div class="kb-stat-top">
@@ -837,6 +928,8 @@
 
                 </div>
 
+
+                <!-- CROPS -->
 
                 <div class="kb-stat">
 
@@ -865,6 +958,8 @@
                 </div>
 
 
+                <!-- CULTIVATION -->
+
                 <div class="kb-stat">
 
                     <div class="kb-stat-top">
@@ -891,6 +986,8 @@
 
                 </div>
 
+
+                <!-- SOIL TEST -->
 
                 <div class="kb-stat">
 
@@ -919,6 +1016,8 @@
                 </div>
 
 
+                <!-- DISEASE -->
+
                 <div class="kb-stat">
 
                     <div class="kb-stat-top">
@@ -945,13 +1044,14 @@
 
                 </div>
 
+
             </div>
 
         </section>
 
 
         <!-- =====================================
-             ANALYTICS & STATISTICS
+             AGRICULTURAL ANALYTICS
         ====================================== -->
 
         <section class="kb-section">
@@ -974,6 +1074,7 @@
 
 
             <div class="kb-analytics-grid">
+
 
                 <!-- CROP STATISTICS -->
 
@@ -1105,6 +1206,133 @@
                             No disease statistics available yet.
                         </div>
                     }
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             FARM PERFORMANCE SNAPSHOT
+        ====================================== -->
+
+        <section class="kb-section">
+
+            <div class="kb-section-heading">
+
+                <div>
+
+                    <h2 class="kb-section-title">
+                        🌾 Farm Performance Snapshot
+                    </h2>
+
+                    <p class="kb-section-description">
+                        Current agricultural activity based on stored records
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="kb-performance-card">
+
+                <div class="kb-performance-grid">
+
+
+                    <!-- TOTAL FARMS -->
+
+                    <div class="kb-performance-item">
+
+                        <div class="kb-performance-icon">
+                            🚜
+                        </div>
+
+                        <div>
+
+                            <div class="kb-performance-label">
+                                Total Farms
+                            </div>
+
+                            <div class="kb-performance-value">
+                                @farmCount
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TOTAL CROPS -->
+
+                    <div class="kb-performance-item">
+
+                        <div class="kb-performance-icon">
+                            🌱
+                        </div>
+
+                        <div>
+
+                            <div class="kb-performance-label">
+                                Total Crops
+                            </div>
+
+                            <div class="kb-performance-value">
+                                @cropCount
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CULTIVATION RECORDS -->
+
+                    <div class="kb-performance-item">
+
+                        <div class="kb-performance-icon">
+                            🌾
+                        </div>
+
+                        <div>
+
+                            <div class="kb-performance-label">
+                                Cultivation Records
+                            </div>
+
+                            <div class="kb-performance-value">
+                                @cultivationCount
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SOIL TESTS -->
+
+                    <div class="kb-performance-item">
+
+                        <div class="kb-performance-icon">
+                            🧪
+                        </div>
+
+                        <div>
+
+                            <div class="kb-performance-label">
+                                Soil Tests
+                            </div>
+
+                            <div class="kb-performance-value">
+                                @soilTestCount
+                            </div>
+
+                        </div>
+
+                    </div>
+
 
                 </div>
 
@@ -1313,7 +1541,7 @@
                     </h3>
 
                     <p>
-                        Organize the crop records used across
+                        Organize crop records used across
                         the agricultural management system.
                     </p>
 
@@ -1493,4 +1721,3 @@
     </div>
 
 </div>
-

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Farmer>
+﻿
+@model IEnumerable<Farmer>
 
 @{
     ViewData["Title"] = "Farmers";
@@ -133,6 +134,7 @@
                     <thead>
 
                         <tr>
+                            <th>Photo</th>
                             <th>ID</th>
                             <th>Name</th>
                             <th>Phone</th>
@@ -149,26 +151,54 @@
                         {
                             <tr>
 
+                                <!-- Farmer Photo -->
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(farmer.PhotoPath))
+                                    {
+                                        <img src="@farmer.PhotoPath"
+                                             alt="@farmer.Name"
+                                             class="farmer-photo" />
+                                    }
+                                    else
+                                    {
+                                        <div class="farmer-photo-placeholder">
+                                            👤
+                                        </div>
+                                    }
+                                </td>
+
+
+                                <!-- ID -->
                                 <td>
                                     @farmer.FarmerId
                                 </td>
 
+
+                                <!-- Name -->
                                 <td>
                                     <strong>@farmer.Name</strong>
                                 </td>
 
+
+                                <!-- Phone -->
                                 <td>
                                     @farmer.Phone
                                 </td>
 
+
+                                <!-- Address -->
                                 <td>
                                     @farmer.Address
                                 </td>
 
+
+                                <!-- Email -->
                                 <td>
                                     @farmer.Email
                                 </td>
 
+
+                                <!-- Actions -->
                                 <td class="actions">
 
                                     @if (Context.Session.GetString("Role") == "Admin")
@@ -319,16 +349,16 @@
         margin-bottom: 25px;
     }
 
-        .page-header h1 {
-            margin: 0;
-            font-size: 32px;
-            font-weight: 700;
-        }
+    .page-header h1 {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 700;
+    }
 
-        .page-header p {
-            margin-top: 6px;
-            color: #6b7280;
-        }
+    .page-header p {
+        margin-top: 6px;
+        color: #6b7280;
+    }
 
 
     /* Header Actions */
@@ -351,10 +381,10 @@
         font-weight: 600;
     }
 
-        .btn-add:hover {
-            background: #157347;
-            color: white;
-        }
+    .btn-add:hover {
+        background: #157347;
+        color: white;
+    }
 
 
     /* Export Excel Button */
@@ -368,10 +398,10 @@
         font-weight: 600;
     }
 
-        .btn-export:hover {
-            background: #157347;
-            color: white;
-        }
+    .btn-export:hover {
+        background: #157347;
+        color: white;
+    }
 
 
     /* Search Filter Card */
@@ -394,12 +424,12 @@
         flex: 1;
     }
 
-        .form-group label {
-            display: block;
-            margin-bottom: 7px;
-            font-weight: 600;
-            color: #374151;
-        }
+    .form-group label {
+        display: block;
+        margin-bottom: 7px;
+        font-weight: 600;
+        color: #374151;
+    }
 
     .form-control {
         width: 100%;
@@ -410,10 +440,10 @@
         box-sizing: border-box;
     }
 
-        .form-control:focus {
-            outline: none;
-            border-color: #198754;
-        }
+    .form-control:focus {
+        outline: none;
+        border-color: #198754;
+    }
 
 
     /* Buttons */
@@ -439,19 +469,19 @@
         color: white;
     }
 
-        .btn-search:hover {
-            background: #157347;
-        }
+    .btn-search:hover {
+        background: #157347;
+    }
 
     .btn-clear {
         background: #e5e7eb;
         color: #374151;
     }
 
-        .btn-clear:hover {
-            background: #d1d5db;
-            color: #111827;
-        }
+    .btn-clear:hover {
+        background: #d1d5db;
+        color: #111827;
+    }
 
 
     /* Result Information */
@@ -465,9 +495,9 @@
         color: #6b7280;
     }
 
-        .result-info strong {
-            color: #198754;
-        }
+    .result-info strong {
+        color: #198754;
+    }
 
     .filter-tag {
         background: #e8f5ee;
@@ -496,23 +526,49 @@
         border-collapse: collapse;
     }
 
-        .farmers-table th {
-            background: #198754;
-            color: white;
-            padding: 14px;
-            text-align: left;
-            font-size: 14px;
-        }
+    .farmers-table th {
+        background: #198754;
+        color: white;
+        padding: 14px;
+        text-align: left;
+        font-size: 14px;
+    }
 
-        .farmers-table td {
-            padding: 14px;
-            border-bottom: 1px solid #e5e7eb;
-            font-size: 14px;
-        }
+    .farmers-table td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 14px;
+        vertical-align: middle;
+    }
 
-        .farmers-table tr:hover {
-            background: #f9fafb;
-        }
+    .farmers-table tr:hover {
+        background: #f9fafb;
+    }
+
+
+    /* Farmer Photo */
+
+    .farmer-photo {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: block;
+        border: 2px solid #c8e6c9;
+        background: #e8f5e9;
+    }
+
+    .farmer-photo-placeholder {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e8f5e9;
+        border: 2px solid #c8e6c9;
+        font-size: 22px;
+    }
 
 
     /* Action Buttons */
@@ -574,16 +630,16 @@
         box-sizing: border-box;
     }
 
-        .page-btn:hover {
-            background: #e8f5ee;
-            color: #157347;
-        }
+    .page-btn:hover {
+        background: #e8f5ee;
+        color: #157347;
+    }
 
-        .page-btn.active {
-            background: #198754;
-            color: white;
-            border-color: #198754;
-        }
+    .page-btn.active {
+        background: #198754;
+        color: white;
+        border-color: #198754;
+    }
 
 
     /* No Results */
@@ -648,6 +704,8 @@
         .page-header h1 {
             font-size: 26px;
         }
+
     }
 
 </style>
+

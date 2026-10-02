@@ -11,6 +11,11 @@ public class ReportsController : Controller
 
     public async Task<IActionResult> FarmerReport(int id)
     {
+        if (id <= 0)
+        {
+            return BadRequest("Invalid farmer ID.");
+        }
+
         var pdf = await _reportService.GenerateFarmerReportAsync(id);
 
         if (pdf.Length == 0)
@@ -21,6 +26,6 @@ public class ReportsController : Controller
         return File(
             pdf,
             "application/pdf",
-            $"FarmerReport_{id}.pdf");
+            $"KrishiBondhu_FarmerReport_{id}.pdf");
     }
 }

@@ -1,48 +1,374 @@
+
 @model Farmer
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Farmer";
 }
 
-<h1>Create</h1>
+<style>
+    .farmer-create-page {
+        max-width: 900px;
+        margin: 35px auto;
+        padding: 0 20px;
+    }
 
-<h4>Farmer</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    .farmer-create-card {
+        background: #ffffff;
+        border: 1px solid #e2ebe3;
+        border-radius: 18px;
+        padding: 30px;
+        box-shadow: 0 8px 25px rgba(27, 94, 32, 0.08);
+    }
 
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+    .page-heading {
+        margin-bottom: 5px;
+        color: #1b5e20;
+        font-weight: 700;
+        font-size: 28px;
+    }
+
+    .page-subtitle {
+        color: #6b7d70;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #34463a;
+        margin-bottom: 7px;
+    }
+
+    .form-control {
+        border-radius: 9px;
+        border: 1px solid #d7e2d9;
+        padding: 10px 12px;
+    }
+
+    .form-control:focus {
+        border-color: #4caf50;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.12);
+    }
+
+    .photo-section {
+        background: #f7fbf7;
+        border: 1px solid #dce9de;
+        border-radius: 14px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .photo-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #2e7d32;
+        margin-bottom: 4px;
+    }
+
+    .photo-help {
+        color: #78909c;
+        font-size: 12px;
+        margin-bottom: 15px;
+    }
+
+    .photo-preview-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 15px;
+    }
+
+    .photo-preview {
+        width: 95px;
+        height: 95px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #c8e6c9;
+        background: #e8f5e9;
+        display: none;
+    }
+
+    .photo-placeholder {
+        width: 95px;
+        height: 95px;
+        border-radius: 50%;
+        background: #e8f5e9;
+        border: 3px solid #c8e6c9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2e7d32;
+        font-size: 34px;
+        font-weight: 700;
+    }
+
+    .photo-input {
+        max-width: 100%;
+        background: white;
+    }
+
+    .button-area {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #edf2ed;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .btn-create {
+        background: #2e7d32;
+        border: none;
+        color: white;
+        padding: 10px 22px;
+        border-radius: 9px;
+        font-weight: 600;
+    }
+
+    .btn-create:hover {
+        background: #1b5e20;
+        color: white;
+    }
+
+    .btn-back {
+        background: #f1f5f2;
+        color: #455a64;
+        padding: 10px 18px;
+        border-radius: 9px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .btn-back:hover {
+        background: #e4ebe5;
+        color: #263238;
+    }
+
+    .field-group {
+        margin-bottom: 18px;
+    }
+</style>
+
+<div class="farmer-create-page">
+
+    <div class="farmer-create-card">
+
+        <h1 class="page-heading">Create Farmer</h1>
+
+        <p class="page-subtitle">
+            Add a new farmer and their agricultural profile to KrishiBondhu.
+        </p>
+
+        <form asp-action="Create"
+              method="post"
+              enctype="multipart/form-data">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <!-- Farmer Photo -->
+            <div class="photo-section">
+
+                <div class="photo-title">
+                    Farmer Photo
+                </div>
+
+                <div class="photo-help">
+                    Upload a JPG, JPEG or PNG image. Maximum size: 5 MB.
+                </div>
+
+                <div class="photo-preview-wrapper">
+
+                    <div id="photoPlaceholder"
+                         class="photo-placeholder">
+                        👤
+                    </div>
+
+                    <img id="photoPreview"
+                         class="photo-preview"
+                         alt="Farmer photo preview" />
+
+                    <div style="flex: 1;">
+                        <input type="file"
+                               name="photo"
+                               id="photo"
+                               class="form-control photo-input"
+                               accept=".jpg,.jpeg,.png,image/jpeg,image/png" />
+
+                        <span asp-validation-for="PhotoPath"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
+
+            <!-- Farmer Information -->
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="field-group">
+                        <label asp-for="Name"
+                               class="form-label">
+                            Farmer Name
+                        </label>
+
+                        <input asp-for="Name"
+                               class="form-control"
+                               placeholder="Enter farmer name" />
+
+                        <span asp-validation-for="Name"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="field-group">
+                        <label asp-for="Phone"
+                               class="form-label">
+                            Phone Number
+                        </label>
+
+                        <input asp-for="Phone"
+                               class="form-control"
+                               placeholder="Enter phone number" />
+
+                        <span asp-validation-for="Phone"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <div class="field-group">
+                        <label asp-for="Address"
+                               class="form-label">
+                            Address
+                        </label>
+
+                        <input asp-for="Address"
+                               class="form-control"
+                               placeholder="Enter farmer address" />
+
+                        <span asp-validation-for="Address"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="field-group">
+                        <label asp-for="Email"
+                               class="form-label">
+                            Email
+                        </label>
+
+                        <input asp-for="Email"
+                               class="form-control"
+                               placeholder="Enter email address" />
+
+                        <span asp-validation-for="Email"
+                              class="text-danger">
+                        </span>
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+
+            <!-- Buttons -->
+            <div class="button-area">
+
+                <button type="submit"
+                        class="btn btn-create">
+                    Create Farmer
+                </button>
+
+                <a asp-action="Index"
+                   class="btn-back">
+                    Back to List
+                </a>
+
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
+
         </form>
+
     </div>
+
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById("photo").addEventListener("change", function (event) {
+
+            const file = event.target.files[0];
+
+            const preview = document.getElementById("photoPreview");
+            const placeholder = document.getElementById("photoPlaceholder");
+
+            if (file) {
+
+                const allowedTypes = [
+                    "image/jpeg",
+                    "image/png"
+                ];
+
+                if (!allowedTypes.includes(file.type)) {
+                    alert("Please select a JPG, JPEG or PNG image.");
+                    event.target.value = "";
+                    preview.style.display = "none";
+                    placeholder.style.display = "flex";
+                    return;
+                }
+
+                if (file.size > 5 * 1024 * 1024) {
+                    alert("Photo size must be less than 5 MB.");
+                    event.target.value = "";
+                    preview.style.display = "none";
+                    placeholder.style.display = "flex";
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                    placeholder.style.display = "none";
+                };
+
+                reader.readAsDataURL(file);
+
+            } else {
+
+                preview.style.display = "none";
+                placeholder.style.display = "flex";
+
+            }
+        });
+    </script>
+}
+

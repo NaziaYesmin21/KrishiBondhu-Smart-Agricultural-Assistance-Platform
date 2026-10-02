@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using ClosedXML.Excel;
 
@@ -7,13 +8,16 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
     {
         private readonly IFarmerService _farmerService;
         private readonly IAuditLogService _auditLogService;
+        private readonly IWebHostEnvironment _environment;
 
         public FarmersController(
             IFarmerService farmerService,
-            IAuditLogService auditLogService)
+            IAuditLogService auditLogService,
+            IWebHostEnvironment environment)
         {
             _farmerService = farmerService;
             _auditLogService = auditLogService;
+            _environment = environment;
         }
 
         private bool IsAdmin()
@@ -40,7 +44,6 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             var farmers = await _farmerService
                 .SearchFarmersAsync(searchTerm);
 
-            // Address Filter
             if (!string.IsNullOrWhiteSpace(address))
             {
                 farmers = farmers
@@ -48,7 +51,6 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                     .ToList();
             }
 
-            // Pagination
             int pageSize = 5;
 
             int totalFarmers = farmers.Count;
@@ -126,14 +128,12 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
             var worksheet = workbook.Worksheets.Add("Farmers");
 
-            // Header
             worksheet.Cell(1, 1).Value = "Farmer ID";
             worksheet.Cell(1, 2).Value = "Name";
             worksheet.Cell(1, 3).Value = "Phone";
             worksheet.Cell(1, 4).Value = "Address";
             worksheet.Cell(1, 5).Value = "Email";
 
-            // Header Style
             var headerRange = worksheet.Range("A1:E1");
 
             headerRange.Style.Font.Bold = true;
@@ -142,7 +142,6 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
             headerRange.Style.Font.FontColor =
                 XLColor.White;
 
-            // Farmer Data
             int row = 2;
 
             foreach (var farmer in farmers)
@@ -156,7 +155,6 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 row++;
             }
 
-            // Adjust column width
             worksheet.Columns().AdjustToContents();
 
             using var stream = new MemoryStream();
@@ -165,7 +163,6 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
             var content = stream.ToArray();
 
-            // Audit Log
             await _auditLogService.LogAsync(
                 GetUsername(),
                 "Export Excel",
@@ -199,18 +196,62 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("FarmerId,Name,Phone,Address,Email")] Farmer farmer)
+            [Bind("FarmerId,Name,Phone,Address,Email")] Farmer farmer,
+            IFormFile? photo)
         {
             if (!IsAdmin())
             {
                 return RedirectToAction("Login", "Auth");
             }
 
+            // Photo validation
+            if (photo != null && photo.Length > 0)
+            {
+                var allowedExtensions = new[]
+                {
+                    ".jpg",
+                    ".jpeg",
+                    ".png"
+                };
+
+                var extension =
+                    Path.GetExtension(photo.FileName)
+                        .ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError(
+                        "PhotoPath",
+                        "Only JPG, JPEG and PNG images are allowed.");
+                }
+
+                // Maximum 5 MB
+                if (photo.Length > 5 * 1024 * 1024)
+                {
+                    ModelState.AddModelError(
+                        "PhotoPath",
+                        "Photo size must be less than 5 MB.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
+                // Save farmer first
                 await _farmerService.CreateFarmerAsync(farmer);
 
-                // Audit Log
+                // Save photo
+                if (photo != null && photo.Length > 0)
+                {
+                    farmer.PhotoPath =
+                        await SaveFarmerPhotoAsync(
+                            photo,
+                            farmer.FarmerId);
+
+                    // Update farmer with photo path
+                    await _farmerService
+                        .UpdateFarmerAsync(farmer);
+                }
+
                 await _auditLogService.LogAsync(
                     GetUsername(),
                     "Create Farmer",
@@ -261,7 +302,9 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id,
-            [Bind("FarmerId,Name,Phone,Address,Email")] Farmer farmer)
+            [Bind("FarmerId,Name,Phone,Address,Email,PhotoPath")]
+            Farmer farmer,
+            IFormFile? photo)
         {
             if (!IsAdmin())
             {
@@ -273,8 +316,65 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
+            // Photo validation
+            if (photo != null && photo.Length > 0)
+            {
+                var allowedExtensions = new[]
+                {
+                    ".jpg",
+                    ".jpeg",
+                    ".png"
+                };
+
+                var extension =
+                    Path.GetExtension(photo.FileName)
+                        .ToLowerInvariant();
+
+                if (!allowedExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError(
+                        "PhotoPath",
+                        "Only JPG, JPEG and PNG images are allowed.");
+                }
+
+                if (photo.Length > 5 * 1024 * 1024)
+                {
+                    ModelState.AddModelError(
+                        "PhotoPath",
+                        "Photo size must be less than 5 MB.");
+                }
+            }
+
             if (ModelState.IsValid)
             {
+                // Get existing farmer
+                var existingFarmer = await _farmerService
+                    .GetFarmerByIdAsync(id);
+
+                if (existingFarmer == null)
+                {
+                    return NotFound();
+                }
+
+                // Keep old photo if no new photo is selected
+                if (photo == null || photo.Length == 0)
+                {
+                    farmer.PhotoPath =
+                        existingFarmer.PhotoPath;
+                }
+                else
+                {
+                    // Delete old photo
+                    DeleteFarmerPhoto(
+                        existingFarmer.PhotoPath);
+
+                    // Save new photo
+                    farmer.PhotoPath =
+                        await SaveFarmerPhotoAsync(
+                            photo,
+                            farmer.FarmerId);
+                }
+
                 var updated = await _farmerService
                     .UpdateFarmerAsync(farmer);
 
@@ -283,7 +383,6 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                     return NotFound();
                 }
 
-                // Audit Log
                 await _auditLogService.LogAsync(
                     GetUsername(),
                     "Update Farmer",
@@ -339,6 +438,15 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return RedirectToAction("Login", "Auth");
             }
 
+            // Get farmer before deleting
+            var farmer = await _farmerService
+                .GetFarmerByIdAsync(id);
+
+            if (farmer == null)
+            {
+                return NotFound();
+            }
+
             var deleted = await _farmerService
                 .DeleteFarmerAsync(id);
 
@@ -347,7 +455,9 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return NotFound();
             }
 
-            // Audit Log
+            // Delete photo from wwwroot
+            DeleteFarmerPhoto(farmer.PhotoPath);
+
             await _auditLogService.LogAsync(
                 GetUsername(),
                 "Delete Farmer",
@@ -359,5 +469,79 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+
+        // =========================
+        // Save Farmer Photo
+        // =========================
+        private async Task<string> SaveFarmerPhotoAsync(
+            IFormFile photo,
+            int farmerId)
+        {
+            string uploadsFolder =
+                Path.Combine(
+                    _environment.WebRootPath,
+                    "uploads",
+                    "farmers");
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            string extension =
+                Path.GetExtension(photo.FileName)
+                    .ToLowerInvariant();
+
+            string fileName =
+                "farmer_" +
+                farmerId +
+                "_" +
+                Guid.NewGuid().ToString("N") +
+                extension;
+
+            string filePath =
+                Path.Combine(
+                    uploadsFolder,
+                    fileName);
+
+            using (var stream =
+                   new FileStream(
+                       filePath,
+                       FileMode.Create))
+            {
+                await photo.CopyToAsync(stream);
+            }
+
+            return "/uploads/farmers/" + fileName;
+        }
+
+
+        // =========================
+        // Delete Farmer Photo
+        // =========================
+        private void DeleteFarmerPhoto(string? photoPath)
+        {
+            if (string.IsNullOrWhiteSpace(photoPath))
+            {
+                return;
+            }
+
+            string fileName =
+                Path.GetFileName(photoPath);
+
+            string filePath =
+                Path.Combine(
+                    _environment.WebRootPath,
+                    "uploads",
+                    "farmers",
+                    fileName);
+
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
+        }
     }
 }
+

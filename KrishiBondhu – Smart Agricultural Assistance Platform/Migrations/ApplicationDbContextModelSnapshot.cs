@@ -190,6 +190,9 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("PhotoPath")
+                        .HasColumnType("text");
+
                     b.HasKey("FarmerId");
 
                     b.ToTable("Farmers");
