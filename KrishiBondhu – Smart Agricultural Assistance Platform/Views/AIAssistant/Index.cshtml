@@ -1,10 +1,25 @@
 ﻿
+@using Markdig
+
 @{
     ViewData["Title"] = "AI Agricultural Assistant";
+
+    string? formattedAnswer = null;
+
+    if (ViewBag.Answer != null)
+    {
+        var pipeline = new MarkdownPipelineBuilder()
+            .DisableHtml()
+            .Build();
+
+        formattedAnswer = Markdown.ToHtml(
+            ViewBag.Answer.ToString() ?? "",
+            pipeline
+        );
+    }
 }
 
 <style>
-
     .ai-page {
         max-width: 1000px;
         margin: 35px auto;
@@ -27,7 +42,7 @@
 
         .ai-header p {
             margin: 0;
-            opacity: 0.9;
+            opacity: .92;
             font-size: 14px;
         }
 
@@ -36,7 +51,7 @@
         border: 1px solid #e1e9e4;
         border-radius: 18px;
         padding: 25px;
-        box-shadow: 0 6px 18px rgba(31, 77, 52, 0.06);
+        box-shadow: 0 6px 18px rgba(31, 77, 52, .06);
         margin-bottom: 20px;
     }
 
@@ -54,14 +69,28 @@
         border-radius: 12px;
         padding: 15px;
         font-size: 14px;
+        line-height: 1.7;
         resize: vertical;
         outline: none;
+        box-sizing: border-box;
     }
 
-        .ai-input:focus {
+        .ai-input:focus,
+        .ai-select:focus,
+        .ai-file:focus {
             border-color: #2f8f62;
-            box-shadow: 0 0 0 3px rgba(47, 143, 98, 0.10);
+            box-shadow: 0 0 0 3px rgba(47, 143, 98, .10);
         }
+
+    .ai-select,
+    .ai-file {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #d7e1db;
+        border-radius: 10px;
+        background: white;
+        box-sizing: border-box;
+    }
 
     .ai-button {
         margin-top: 15px;
@@ -78,29 +107,119 @@
             background: #125537;
         }
 
-    .ai-answer {
-        background: #f4faf6;
-        border-left: 5px solid #2f8f62;
-        padding: 18px;
-        border-radius: 10px;
-        color: #244536;
-        line-height: 1.7;
-        margin-top: 20px;
+    .ai-secondary-button {
+        background: #eaf5ed;
+        color: #176b45;
+        border: 1px solid #dcece1;
     }
 
     .ai-question {
         background: #f8faf9;
-        padding: 15px;
-        border-radius: 10px;
-        margin-top: 15px;
+        border: 1px solid #e7eee9;
+        padding: 16px;
+        border-radius: 12px;
+        margin-top: 22px;
         color: #43534b;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
     }
 
-    .example-title {
+    .ai-question-title {
+        display: block;
+        color: #176b45;
         font-weight: 700;
-        color: #244536;
-        margin-bottom: 15px;
+        margin-bottom: 8px;
     }
+
+    .ai-answer {
+        background: #f4faf6;
+        border: 1px solid #dcece1;
+        border-left: 5px solid #2f8f62;
+        padding: 22px;
+        border-radius: 12px;
+        color: #244536;
+        margin-top: 18px;
+        overflow-wrap: anywhere;
+    }
+
+    .ai-answer-heading {
+        font-size: 18px;
+        font-weight: 700;
+        color: #176b45;
+        margin-bottom: 18px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #dcece1;
+    }
+
+    .ai-answer-content {
+        font-size: 15px;
+        line-height: 1.9;
+        overflow-wrap: anywhere;
+    }
+
+        .ai-answer-content p {
+            margin: 0 0 14px;
+        }
+
+        .ai-answer-content h1,
+        .ai-answer-content h2,
+        .ai-answer-content h3,
+        .ai-answer-content h4 {
+            color: #176b45;
+            margin: 20px 0 10px;
+        }
+
+        .ai-answer-content ul,
+        .ai-answer-content ol {
+            padding-left: 27px;
+            margin: 10px 0 18px;
+        }
+
+        .ai-answer-content li {
+            margin-bottom: 8px;
+        }
+
+        .ai-answer-content strong {
+            color: #176b45;
+        }
+
+        .ai-answer-content blockquote {
+            border-left: 4px solid #8dbba0;
+            padding: 10px 15px;
+            margin: 15px 0;
+            background: #eaf5ed;
+        }
+
+        .ai-answer-content code {
+            background: #e7f2ea;
+            color: #176b45;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .ai-answer-content a {
+            color: #176b45;
+            overflow-wrap: anywhere;
+        }
+
+        .ai-answer-content table {
+            width: 100%;
+            border-collapse: collapse;
+            display: block;
+            overflow-x: auto;
+        }
+
+        .ai-answer-content th,
+        .ai-answer-content td {
+            border: 1px solid #dcece1;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .ai-answer-content th {
+            background: #eaf5ed;
+            color: #176b45;
+        }
 
     .example-item {
         display: inline-block;
@@ -110,123 +229,198 @@
         border-radius: 20px;
         margin: 5px;
         font-size: 12px;
+        border: 1px solid #dcece1;
     }
 
-</style>
+    .ai-info-text {
+        line-height: 1.8;
+    }
 
+    .upload-help {
+        color: #66756c;
+        font-size: 13px;
+        margin-top: 7px;
+    }
+
+    @@media (max-width: 768px) {
+        .ai-page {
+            margin: 20px auto;
+        }
+
+        .ai-header {
+            padding: 24px 20px;
+        }
+
+            .ai-header h1 {
+                font-size: 24px;
+            }
+
+        .ai-card {
+            padding: 18px;
+        }
+
+        .ai-answer {
+            padding: 16px;
+        }
+    }
+</style>
 
 <div class="container ai-page">
 
-    <!-- Header -->
-
     <div class="ai-header">
-
         <h1>🤖 AI Agricultural Assistant</h1>
-
         <p>
-            Ask questions about crops, soil, diseases, cultivation,
-            and agricultural practices.
+            Ask agricultural questions or upload a crop leaf image
+            to get AI-powered guidance.
         </p>
-
     </div>
-
-
-    <!-- Question Card -->
 
     <div class="ai-card">
 
         <form asp-controller="AIAssistant"
               asp-action="Ask"
-              method="post">
+              method="post"
+              enctype="multipart/form-data">
 
-            <label class="ai-label">
+            @Html.AntiForgeryToken()
+
+            <label class="ai-label" for="question">
                 🌱 Ask Your Agricultural Question
             </label>
 
-            <textarea name="question"
+            <textarea id="question"
+                      name="question"
                       class="ai-input"
-                      placeholder="Example: My rice plant leaves have yellow spots. What should I do?">@ViewBag.Question</textarea>
+                      placeholder="Example: My tomato leaves have yellow spots. What should I do?"
+                      maxlength="3000">@ViewBag.Question</textarea>
+
+            <div class="mt-4">
+                <label class="ai-label" for="cropName">
+                    🌾 Select Crop (optional)
+                </label>
+
+                <select id="cropName"
+                        name="cropName"
+                        class="ai-select">
+
+                    <option value="">Not specified</option>
+
+                    <option value="Rice"
+                            selected="@(ViewBag.SelectedCrop?.ToString() == "Rice")">
+                        Rice
+                    </option>
+
+                    <option value="Tomato"
+                            selected="@(ViewBag.SelectedCrop?.ToString() == "Tomato")">
+                        Tomato
+                    </option>
+
+                    <option value="Potato"
+                            selected="@(ViewBag.SelectedCrop?.ToString() == "Potato")">
+                        Potato
+                    </option>
+
+                    <option value="Wheat"
+                            selected="@(ViewBag.SelectedCrop?.ToString() == "Wheat")">
+                        Wheat
+                    </option>
+
+                    <option value="Corn"
+                            selected="@(ViewBag.SelectedCrop?.ToString() == "Corn")">
+                        Corn
+                    </option>
+                </select>
+            </div>
+
+            <div class="mt-4">
+                <label class="ai-label" for="image">
+                    📷 Upload Crop Leaf Image (optional)
+                </label>
+
+                <input id="image"
+                       name="image"
+                       type="file"
+                       class="ai-file"
+                       accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                <p class="upload-help">
+                    JPG, PNG or WebP. Maximum size: 10 MB.
+                    You can submit a text question, an image, or both.
+                </p>
+            </div>
 
             <button type="submit" class="ai-button">
-                🤖 Ask Assistant
+                🤖 Ask Assistant / Analyze Image
+            </button>
+
+            <button type="reset"
+                    class="ai-button ai-secondary-button">
+                Clear Form
             </button>
 
         </form>
 
-
         @if (ViewBag.Answer != null)
         {
-            <div class="ai-question">
+            @if (!string.IsNullOrWhiteSpace(ViewBag.Question?.ToString()))
+            {
+                <div class="ai-question">
+                    <span class="ai-question-title">
+                        📝 Your Question
+                    </span>
 
-                <strong>Your Question:</strong>
+                    <div>@ViewBag.Question</div>
+                </div>
+            }
 
-                <br />
+            @if (!string.IsNullOrWhiteSpace(ViewBag.ImageName?.ToString()))
+            {
+                <div class="ai-question">
+                    <span class="ai-question-title">
+                        📷 Uploaded Image
+                    </span>
 
-                @ViewBag.Question
-
-            </div>
-
+                    <div>@ViewBag.ImageName</div>
+                </div>
+            }
 
             <div class="ai-answer">
+                <div class="ai-answer-heading">
+                    🌱 Assistant Response
+                </div>
 
-                <strong>🤖 Assistant Response</strong>
-
-                <br /><br />
-
-                @ViewBag.Answer
-
+                <div class="ai-answer-content">
+                    @Html.Raw(formattedAnswer)
+                </div>
             </div>
         }
 
     </div>
 
-
-    <!-- Example Questions -->
-
     <div class="ai-card">
+        <h5 class="mb-3">💡 Example Questions</h5>
 
-        <div class="example-title">
-            💡 Example Questions
-        </div>
-
-        <span class="example-item">
-            🌾 Rice leaf disease
-        </span>
-
-        <span class="example-item">
-            🌱 Best crop for soil
-        </span>
-
-        <span class="example-item">
-            💧 How much water is needed?
-        </span>
-
-        <span class="example-item">
-            🐛 Pest control
-        </span>
-
-        <span class="example-item">
-            🌿 Fertilizer recommendation
-        </span>
-
+        <span class="example-item">🌾 Rice leaf disease</span>
+        <span class="example-item">🍅 Tomato leaf spots</span>
+        <span class="example-item">🌱 Best crop for soil</span>
+        <span class="example-item">💧 Water requirements</span>
+        <span class="example-item">🐛 Pest control</span>
+        <span class="example-item">🌿 Fertilizer guidance</span>
     </div>
 
-
-    <!-- Information -->
-
     <div class="ai-card">
+        <strong style="color:#176b45;">
+            ℹ️ About AI Agricultural Assistant
+        </strong>
 
-        <strong>ℹ️ About AI Agricultural Assistant</strong>
-
-        <p class="mt-2 mb-0 text-muted">
-
-            This assistant is designed to provide simple agricultural
-            guidance based on the farmer's questions. Real AI-powered
-            responses will be integrated in the next stage.
-
+        <p class="text-muted mt-2 mb-0 ai-info-text">
+            KrishiBondhu provides agricultural guidance using
+            available database information and AI-generated responses.
+            Image analysis is an estimate, not a confirmed diagnosis.
+            Consult a local agricultural officer for serious or
+            uncertain crop problems. Always follow approved product
+            labels and professional advice for pesticide use.
         </p>
-
     </div>
 
 </div>
-

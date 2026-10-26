@@ -5,9 +5,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using QuestPDF.Infrastructure;
 
+using Google.GenAI;
+
+
 QuestPDF.Settings.License = LicenseType.Evaluation;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddScoped<
+    KrishiBondhu.Services.GeminiAgricultureService>();
 
 builder.Services.AddSession();
 
@@ -25,6 +30,7 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IAIAssistantService, AIAssistantService>();
+builder.Services.AddScoped<CropDiseaseDetectionService>();
 builder.Services.AddScoped<HarvestReminderService>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

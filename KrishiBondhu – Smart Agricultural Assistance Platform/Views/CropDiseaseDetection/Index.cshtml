@@ -1,0 +1,136 @@
+﻿@{
+    ViewData["Title"] = "Crop Disease Detection";
+    var cropName = ViewBag.CropName as string ?? "";
+    var answer = ViewBag.Answer as string;
+    var error = ViewBag.Error as string;
+}
+
+<div class="container py-4">
+    <div class="rounded-4 p-4 p-md-5 mb-4 text-white"
+         style="background: linear-gradient(135deg, #14532d, #16a34a);">
+        <span class="badge bg-light text-success mb-3">
+            KrishiBondhu AI
+        </span>
+
+        <h1 class="fw-bold">Crop Disease Detection</h1>
+
+        <p class="mb-0">
+            Upload a crop leaf photo to get AI-assisted information
+            about possible diseases and recommended next steps.
+        </p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+            <h4 class="fw-bold mb-2">Analyze a Leaf Image</h4>
+            <p class="text-muted">
+                JPG, PNG or WebP · Maximum size 10 MB
+            </p>
+
+            <form asp-controller="CropDiseaseDetection"
+                  asp-action="Analyze"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                @Html.AntiForgeryToken()
+
+                <div class="mb-3">
+                    <label for="cropName" class="form-label fw-semibold">
+                        Select Crop (Optional)
+                    </label>
+
+                    <select id="cropName" name="cropName"
+                            class="form-select">
+                        <option value="">Unknown / Not selected</option>
+
+                        <option value="Rice"
+                                selected="@(cropName == "Rice")">
+                            Rice (ধান)
+                        </option>
+
+                        <option value="Tomato"
+                                selected="@(cropName == "Tomato")">
+                            Tomato (টমেটো)
+                        </option>
+
+                        <option value="Potato"
+                                selected="@(cropName == "Potato")">
+                            Potato (আলু)
+                        </option>
+
+                        <option value="Wheat"
+                                selected="@(cropName == "Wheat")">
+                            Wheat (গম)
+                        </option>
+
+                        <option value="Corn"
+                                selected="@(cropName == "Corn")">
+                            Corn (ভুট্টা)
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label for="image" class="form-label fw-semibold">
+                        Upload Leaf Photo
+                    </label>
+
+                    <input type="file"
+                           id="image"
+                           name="image"
+                           class="form-control"
+                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+                           required />
+
+                    <small class="text-muted">
+                        Choose a clear photo of the affected leaf.
+                    </small>
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success btn-lg rounded-3">
+                    <span class="me-1">🔍</span>
+                    Analyze Image
+                </button>
+            </form>
+        </div>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <div class="alert alert-danger rounded-3" role="alert">
+            <strong>Notice:</strong> @error
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(answer))
+    {
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-body p-4">
+                <h4 class="fw-bold text-success mb-3">
+                    AI Analysis Result
+                </h4>
+
+                @if (!string.IsNullOrWhiteSpace(cropName))
+                {
+                    <p class="text-muted">
+                        Selected crop: <strong>@cropName</strong>
+                    </p>
+                }
+
+                <div class="border rounded-3 p-3"
+                     style="white-space: pre-wrap; overflow-wrap: anywhere;">
+                    @answer
+                </div>
+
+                <div class="alert alert-warning mt-4 mb-0">
+                    <strong>Important:</strong>
+                    This result is an AI-generated estimate, not a confirmed
+                    diagnosis. Check the plant carefully and consult a local
+                    agricultural officer if the result is unclear or the
+                    disease is severe.
+                </div>
+            </div>
+        </div>
+    }
+</div>

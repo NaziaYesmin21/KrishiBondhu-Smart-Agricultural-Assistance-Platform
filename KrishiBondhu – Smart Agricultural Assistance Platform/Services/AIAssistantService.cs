@@ -1,5 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Google.GenAI;
+using Microsoft.EntityFrameworkCore;
 
 namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
 {
@@ -28,12 +33,14 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
         {
             if (string.IsNullOrWhiteSpace(question))
             {
-                return "Please enter an agricultural question.";
+                return "অনুগ্রহ করে কৃষি সম্পর্কিত একটি প্রশ্ন লিখুন।";
             }
 
             try
             {
-                // 1. Get Crop Information
+                System.Diagnostics.Debug.WriteLine(
+                    "KrishiBondhu: Loading crop information...");
+
                 var crops = await _context.Crops
                     .AsNoTracking()
                     .Select(c => new
@@ -44,7 +51,9 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                     })
                     .ToListAsync();
 
-                // 2. Get Soil Test Information
+                System.Diagnostics.Debug.WriteLine(
+                    "KrishiBondhu: Loading soil test information...");
+
                 var soilTests = await _context.SoilTests
                     .AsNoTracking()
                     .Select(s => new
@@ -58,7 +67,9 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                     })
                     .ToListAsync();
 
-                // 3. Get Disease Information
+                System.Diagnostics.Debug.WriteLine(
+                    "KrishiBondhu: Loading disease information...");
+
                 var diseases = await _context.Diseases
                     .AsNoTracking()
                     .Select(d => new
@@ -70,7 +81,9 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                     })
                     .ToListAsync();
 
-                // 4. Get Cultivation Information
+                System.Diagnostics.Debug.WriteLine(
+                    "KrishiBondhu: Loading cultivation information...");
+
                 var cultivations = await _context.Cultivations
                     .AsNoTracking()
                     .Include(c => c.Crop)
@@ -85,216 +98,215 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Services
                     })
                     .ToListAsync();
 
-                // 5. Prepare Database Context
                 var cropContext = crops.Any()
-                    ? string.Join("\n",
-                        crops.Select(c =>
-                            $"- Crop: {c.CropName}, " +
-                            $"Season: {c.Season}, " +
-                            $"Description: {c.Description}"))
+                    ? string.Join("\n", crops.Select(c =>
+                        $"- Crop: {c.CropName}, " +
+                        $"Season: {c.Season}, " +
+                        $"Description: {c.Description}"))
                     : "No crop records available.";
 
                 var soilContext = soilTests.Any()
-                    ? string.Join("\n",
-                        soilTests.Select(s =>
-                            $"- Farm ID: {s.FarmId}, " +
-                            $"Test Date: {s.TestDate:dd MMM yyyy}, " +
-                            $"pH: {s.PH}, " +
-                            $"Nitrogen: {s.Nitrogen}, " +
-                            $"Phosphorus: {s.Phosphorus}, " +
-                            $"Potassium: {s.Potassium}"))
+                    ? string.Join("\n", soilTests.Select(s =>
+                        $"- Farm ID: {s.FarmId}, " +
+                        $"Test Date: {s.TestDate:dd MMM yyyy}, " +
+                        $"pH: {s.PH}, " +
+                        $"Nitrogen: {s.Nitrogen}, " +
+                        $"Phosphorus: {s.Phosphorus}, " +
+                        $"Potassium: {s.Potassium}"))
                     : "No soil test records available.";
 
                 var diseaseContext = diseases.Any()
-                    ? string.Join("\n",
-                        diseases.Select(d =>
-                            $"- Disease: {d.DiseaseName}, " +
-                            $"Crop ID: {d.CropId}, " +
-                            $"Symptoms: {d.Symptoms}, " +
-                            $"Treatment: {d.Treatment}"))
+                    ? string.Join("\n", diseases.Select(d =>
+                        $"- Disease: {d.DiseaseName}, " +
+                        $"Crop ID: {d.CropId}, " +
+                        $"Symptoms: {d.Symptoms}, " +
+                        $"Treatment: {d.Treatment}"))
                     : "No disease records available.";
 
                 var cultivationContext = cultivations.Any()
-                    ? string.Join("\n",
-                        cultivations.Select(c =>
-                            $"- Cultivation ID: {c.CultivationId}, " +
-                            $"Farm ID: {c.FarmId}, " +
-                            $"Crop: {c.CropName}, " +
-                            $"Planting Date: {c.PlantingDate:dd MMM yyyy}, " +
-                            $"Harvest Date: " +
-                            $"{(c.HarvestDate.HasValue
-                                ? c.HarvestDate.Value.ToString("dd MMM yyyy")
-                                : "Not specified")}, " +
-                            $"Yield: {c.Yield}"))
+                    ? string.Join("\n", cultivations.Select(c =>
+                        $"- Cultivation ID: {c.CultivationId}, " +
+                        $"Farm ID: {c.FarmId}, " +
+                        $"Crop: {c.CropName}, " +
+                        $"Planting Date: {c.PlantingDate:dd MMM yyyy}, " +
+                        $"Harvest Date: " +
+                        $"{(c.HarvestDate.HasValue
+                            ? c.HarvestDate.Value.ToString("dd MMM yyyy")
+                            : "Not specified")}, " +
+                        $"Yield: {c.Yield}"))
                     : "No cultivation records available.";
 
-                // 6. Create AI Prompt
                 var prompt = $"""
                     You are the AI Agricultural Assistant of
                     KrishiBondhu – Smart Agricultural Assistance Platform.
 
-                    Your job is to provide simple, practical and
-                    understandable agricultural guidance.
+                    Help farmers in Bangladesh with practical,
+                    understandable and responsible agricultural guidance.
 
-                    The system contains real agricultural records.
-                    Use the following database information as context
-                    when it is relevant to the farmer's question.
+                    Use the database information when relevant.
+                    Never invent database records or values.
 
-                    ==============================
-                    CROP INFORMATION
-                    ==============================
-
+                    CROP INFORMATION:
                     {cropContext}
 
-                    ==============================
-                    SOIL TEST INFORMATION
-                    ==============================
-
+                    SOIL TEST INFORMATION:
                     {soilContext}
 
-                    ==============================
-                    DISEASE INFORMATION
-                    ==============================
-
+                    DISEASE INFORMATION:
                     {diseaseContext}
 
-                    ==============================
-                    CULTIVATION INFORMATION
-                    ==============================
-
+                    CULTIVATION INFORMATION:
                     {cultivationContext}
 
-                    ==============================
-                    FARMER QUESTION
-                    ==============================
-
+                    FARMER QUESTION:
                     {question}
 
-                    ==============================
-                    RESPONSE GUIDELINES
-                    ==============================
-
-                    1. Answer the farmer's actual question directly.
-                    2. Use the KrishiBondhu database information
-                       when it is relevant.
-                    3. If database information is not sufficient,
-                       clearly say that the available records are
-                       not enough and provide general guidance.
-                    4. Use simple language.
-                    5. If the question is in Bangla, answer in Bangla.
-                    6. If the question is in English, answer in English.
-                    7. For disease-related questions, mention possible
-                       symptoms and appropriate management steps.
-                    8. For soil-related questions, consider pH,
-                       Nitrogen, Phosphorus and Potassium values
-                       when relevant.
-                    9. Do not invent database records.
-                    10. Do not claim that a disease is definitely
-                        present based only on a description or symptom.
-                    11. For pesticides or chemicals, advise the farmer
-                        to follow the product label and consult a
-                        qualified local agricultural professional
-                        when necessary.
-
-                    Give a concise but useful answer.
+                    RESPONSE RULES:
+                    1. Answer the actual question directly.
+                    2. If the question is in Bangla, answer in simple Bangla.
+                    3. If the question is in English, answer in simple English.
+                    4. Return Markdown, not HTML.
+                    5. Use clear headings and separate bullet points.
+                    6. Keep paragraphs short and readable.
+                    7. Use database records when relevant.
+                    8. If information is missing, say so honestly.
+                    9. Do not claim a disease is confirmed without evidence.
+                    10. Never invent soil values or treatment results.
+                    11. Do not guess pesticide doses.
+                    12. For serious problems, recommend a local agricultural
+                        officer and advise following approved product labels.
+                    13. Give a concise but useful answer.
                     """;
 
-                // 7. Gemini request with retry
-                using var cts =
-                    new CancellationTokenSource(
-                        TimeSpan.FromSeconds(90));
+                System.Diagnostics.Debug.WriteLine(
+                    "KrishiBondhu: Sending text request to Gemini...");
+
+                using var cts = new CancellationTokenSource(
+                    TimeSpan.FromSeconds(45));
 
                 Exception? lastException = null;
 
-                int[] retryDelays =
-                {
-                    2000,
-                    5000,
-                    10000
-                };
-
-                for (int attempt = 0; attempt <= retryDelays.Length; attempt++)
+                // One initial attempt plus up to two retries.
+                for (int attempt = 1; attempt <= 3; attempt++)
                 {
                     try
                     {
+                        System.Diagnostics.Debug.WriteLine(
+                            $"KrishiBondhu: Gemini attempt {attempt}/3.");
+
                         var response =
                             await _client.Models.GenerateContentAsync(
                                 model: "gemini-3.7-flash",
                                 contents: prompt,
                                 cancellationToken: cts.Token);
 
-                        // 8. Extract AI Response
-                        var answer =
-                            response.Candidates?
-                                .FirstOrDefault()?
-                                .Content?
-                                .Parts?
-                                .FirstOrDefault()?
-                                .Text;
+                        System.Diagnostics.Debug.WriteLine(
+                            "KrishiBondhu: Gemini text response received.");
+
+                        var answer = response.Candidates?
+                            .FirstOrDefault()?
+                            .Content?
+                            .Parts?
+                            .FirstOrDefault(p =>
+                                !string.IsNullOrWhiteSpace(p.Text))?
+                            .Text;
 
                         if (!string.IsNullOrWhiteSpace(answer))
                         {
                             return answer;
                         }
 
-                        return "Sorry, I could not generate an answer right now.";
+                        return "AI কোনো উত্তর দেয়নি। কিছুক্ষণ পর আবার চেষ্টা করুন।";
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        System.Diagnostics.Debug.WriteLine(
+                            "KrishiBondhu: Gemini request timed out.");
+
+                        return "AI উত্তর দিতে বেশি সময় নিচ্ছে। " +
+                               "কিছুক্ষণ পর আবার চেষ্টা করুন।";
                     }
                     catch (Exception ex)
                     {
                         lastException = ex;
 
-                        var errorMessage =
-                            ex.Message.ToLowerInvariant();
+                        // Do not print the API key or configuration values.
+                        System.Diagnostics.Debug.WriteLine(
+                            $"KrishiBondhu: Gemini attempt {attempt} failed: " +
+                            $"{ex.GetType().Name}: {ex.Message}");
+
+                        var error = ex.ToString().ToLowerInvariant();
 
                         bool temporaryError =
-                            errorMessage.Contains("high demand") ||
-                            errorMessage.Contains("503") ||
-                            errorMessage.Contains("unavailable") ||
-                            errorMessage.Contains("429") ||
-                            errorMessage.Contains("resource exhausted");
+                            error.Contains("high demand") ||
+                            error.Contains("503") ||
+                            error.Contains("429") ||
+                            error.Contains("500") ||
+                            error.Contains("unavailable") ||
+                            error.Contains("overloaded") ||
+                            error.Contains("resource_exhausted") ||
+                            error.Contains("timeout");
 
-                        if (!temporaryError ||
-                            attempt >= retryDelays.Length)
+                        if (!temporaryError || attempt == 3)
                         {
                             break;
                         }
 
                         await Task.Delay(
-                            retryDelays[attempt],
-                            cts.Token);
+                            TimeSpan.FromSeconds(attempt * 2));
                     }
                 }
 
                 if (lastException != null)
                 {
-                    var errorMessage =
-                        lastException.Message.ToLowerInvariant();
+                    var error = lastException.ToString().ToLowerInvariant();
 
-                    if (errorMessage.Contains("high demand") ||
-                        errorMessage.Contains("503") ||
-                        errorMessage.Contains("unavailable"))
+                    if (error.Contains("429") ||
+                        error.Contains("resource_exhausted"))
                     {
-                        return "The AI service is temporarily busy. Please try again in a few moments.";
+                        return "Gemini API-এর request limit বা quota " +
+                               "সংক্রান্ত সমস্যা হয়েছে। AI Studio-তে " +
+                               "usage ও limits পরীক্ষা করুন।";
                     }
 
-                    if (errorMessage.Contains("429") ||
-                        errorMessage.Contains("resource exhausted"))
+                    if (error.Contains("high demand") ||
+                        error.Contains("503") ||
+                        error.Contains("overloaded") ||
+                        error.Contains("unavailable"))
                     {
-                        return "The AI service has temporarily reached its request limit. Please try again later.";
+                        return "Gemini server এখন ব্যস্ত বা unavailable। " +
+                               "কিছুক্ষণ পরে আবার চেষ্টা করুন।";
                     }
 
-                    return "Sorry, the AI assistant is temporarily unavailable.";
+                    if (error.Contains("api key") ||
+                        error.Contains("permission denied") ||
+                        error.Contains("unauthenticated") ||
+                        error.Contains("401") ||
+                        error.Contains("403"))
+                    {
+                        return "Gemini API key বা permission-এ সমস্যা হয়েছে। " +
+                               "Google AI Studio ও User Secrets configuration পরীক্ষা করুন।";
+                    }
+
+                    return "AI request ব্যর্থ হয়েছে (" +
+                           lastException.GetType().Name +
+                           ")। বিস্তারিত জানতে Visual Studio Output window দেখুন।";
                 }
 
-                return "Sorry, I could not generate an answer right now.";
+                return "এই মুহূর্তে AI উত্তর দিতে পারেনি। পরে আবার চেষ্টা করুন।";
             }
             catch (OperationCanceledException)
             {
-                return "The AI request took too long. Please try again.";
+                return "Database বা AI operation-এ বেশি সময় লাগছে। আবার চেষ্টা করুন।";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return "Sorry, the AI assistant is temporarily unavailable.";
+                System.Diagnostics.Debug.WriteLine(
+                    "KrishiBondhu AIAssistantService Error: " +
+                    ex.GetType().Name + ": " + ex.Message);
+
+                return "AI Assistant-এর আগে database বা service-এ সমস্যা হয়েছে। " +
+                       "Visual Studio Output window পরীক্ষা করুন।";
             }
         }
     }
