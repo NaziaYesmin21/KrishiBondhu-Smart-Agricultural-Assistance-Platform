@@ -4,21 +4,39 @@
     ViewData["Title"] = "Register";
 }
 
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-7">
 
             <div class="card shadow">
-                <div class="card-body">
+                <div class="card-body p-4">
 
                     <h2 class="text-center mb-4">Create Account</h2>
 
-                    <form asp-action="Register" method="post">
+                    <form asp-controller="Auth" asp-action="Register" method="post">
 
                         <div asp-validation-summary="ModelOnly"
                              class="text-danger mb-3">
                         </div>
 
+                        <!-- Account Type -->
+                        <div class="mb-3">
+                            <label asp-for="AccountType" class="form-label">
+                                Account Type
+                            </label>
+
+                            <select asp-for="AccountType"
+                                    id="accountType"
+                                    class="form-select">
+                                <option value="User">Farmer / General User</option>
+                                <option value="AgroFirm">Agro Firm</option>
+                            </select>
+
+                            <span asp-validation-for="AccountType"
+                                  class="text-danger"></span>
+                        </div>
+
+                        <!-- Common Fields -->
                         <div class="mb-3">
                             <label asp-for="Username" class="form-label">
                                 Username
@@ -29,8 +47,7 @@
                                    placeholder="Enter username" />
 
                             <span asp-validation-for="Username"
-                                  class="text-danger">
-                            </span>
+                                  class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -43,8 +60,7 @@
                                    placeholder="Enter email" />
 
                             <span asp-validation-for="Email"
-                                  class="text-danger">
-                            </span>
+                                  class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -57,8 +73,7 @@
                                    placeholder="Enter password" />
 
                             <span asp-validation-for="Password"
-                                  class="text-danger">
-                            </span>
+                                  class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -71,12 +86,107 @@
                                    placeholder="Confirm password" />
 
                             <span asp-validation-for="ConfirmPassword"
-                                  class="text-danger">
-                            </span>
+                                  class="text-danger"></span>
                         </div>
 
-                        <button type="submit"
-                                class="btn btn-success w-100">
+                        <!-- Agro Firm Fields -->
+                        <div id="agroFirmFields" style="display:none;">
+
+                            <hr />
+                            <h5 class="mb-3 text-success">
+                                Agro Firm Information
+                            </h5>
+
+                            <div class="mb-3">
+                                <label asp-for="FirmName" class="form-label">
+                                    Firm Name
+                                </label>
+
+                                <input asp-for="FirmName"
+                                       class="form-control"
+                                       placeholder="Enter firm name" />
+
+                                <span asp-validation-for="FirmName"
+                                      class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="OwnerName" class="form-label">
+                                    Owner Name
+                                </label>
+
+                                <input asp-for="OwnerName"
+                                       class="form-control"
+                                       placeholder="Enter owner's name" />
+
+                                <span asp-validation-for="OwnerName"
+                                      class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Phone" class="form-label">
+                                    Phone Number
+                                </label>
+
+                                <input asp-for="Phone"
+                                       class="form-control"
+                                       placeholder="Enter phone number" />
+
+                                <span asp-validation-for="Phone"
+                                      class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Address" class="form-label">
+                                    Business Address
+                                </label>
+
+                                <textarea asp-for="Address"
+                                          class="form-control"
+                                          rows="2"
+                                          placeholder="Enter business address"></textarea>
+
+                                <span asp-validation-for="Address"
+                                      class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="BusinessType" class="form-label">
+                                    Business Type
+                                </label>
+
+                                <select asp-for="BusinessType"
+                                        class="form-select">
+                                    <option value="">-- Select Business Type --</option>
+                                    <option value="InputFirm">
+                                        Agricultural Input Firm
+                                    </option>
+                                    <option value="ServiceFirm">
+                                        Agricultural Service Firm
+                                    </option>
+                                </select>
+
+                                <span asp-validation-for="BusinessType"
+                                      class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label">
+                                    Description (Optional)
+                                </label>
+
+                                <textarea asp-for="Description"
+                                          class="form-control"
+                                          rows="3"
+                                          placeholder="Describe your products or services"></textarea>
+
+                                <span asp-validation-for="Description"
+                                      class="text-danger"></span>
+                            </div>
+
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100">
                             Register
                         </button>
 
@@ -84,9 +194,7 @@
 
                     <div class="text-center mt-3">
                         Already have an account?
-
-                        <a asp-controller="Auth"
-                           asp-action="Login">
+                        <a asp-controller="Auth" asp-action="Login">
                             Login
                         </a>
                     </div>
@@ -102,4 +210,20 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const accountType = document.getElementById("accountType");
+            const agroFirmFields = document.getElementById("agroFirmFields");
+
+            function toggleAgroFirmFields() {
+                agroFirmFields.style.display =
+                    accountType.value === "AgroFirm" ? "block" : "none";
+            }
+
+            accountType.addEventListener("change", toggleAgroFirmFields);
+
+            toggleAgroFirmFields();
+        });
+    </script>
 }

@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewData["Title"] = "Agro Firm Dashboard";
+}
+
+<div class="container mt-4 mb-5">
+
+    <!-- Welcome Section -->
+    <div class="p-4 mb-4 rounded-3 text-white"
+         style="background: linear-gradient(135deg, #166534, #22a06b);">
+
+        <h2>Welcome, @ViewBag.FirmName!</h2>
+
+        <p class="mb-0">
+            Welcome to KrishiBondhu Agro Firm Portal.
+            Manage your agricultural business from here.
+        </p>
+    </div>
+
+    <!-- Information Cards -->
+    <div class="row g-4">
+
+        <!-- Firm Information -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body p-4">
+
+                    <h5 class="text-success">Firm Information</h5>
+                    <hr />
+
+                    <p><strong>Firm Name:</strong> @ViewBag.FirmName</p>
+                    <p><strong>Owner Name:</strong> @ViewBag.OwnerName</p>
+                    <p><strong>Business Type:</strong> @ViewBag.BusinessType</p>
+                    <p><strong>Phone:</strong> @ViewBag.Phone</p>
+                    <p class="mb-0"><strong>Address:</strong> @ViewBag.Address</p>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Overview -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-body p-4">
+
+                    <h5 class="text-success">Business Overview</h5>
+                    <hr />
+
+                    <p>
+                        <strong>Account Status:</strong>
+
+                        @if (ViewBag.IsActive == true)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Profile Not Found</span>
+                        }
+                    </p>
+
+                    <p><strong>Description:</strong> @ViewBag.Description</p>
+
+                    <p class="text-muted mb-0">
+                        You can update your firm information using the Edit Profile option.
+                    </p>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quick Guide -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-body p-4">
+
+            <h5 class="text-success">Quick Guide</h5>
+            <hr />
+
+            <ul class="mb-0">
+                <li class="mb-2">Keep your firm information up to date.</li>
+                <li class="mb-2">Provide accurate contact details for farmers.</li>
+                <li class="mb-2">Add your agricultural products and services.</li>
+                <li>Connect with farmers through KrishiBondhu.</li>
+            </ul>
+
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="d-flex flex-wrap gap-2 mt-4">
+
+        <a asp-controller="AgroFirm"
+           asp-action="EditProfile"
+           class="btn btn-success">
+            <i class="bi bi-pencil-square"></i>
+            Edit Profile
+        </a>
+
+        <a asp-controller="AgroProductServices"
+           asp-action="Index"
+           class="btn btn-outline-success">
+            <i class="bi bi-box-seam"></i>
+            Manage Products & Services
+        </a>
+
+        <a asp-controller="Auth"
+           asp-action="Logout"
+           class="btn btn-outline-danger">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+        </a>
+
+    </div>
+
+</div>

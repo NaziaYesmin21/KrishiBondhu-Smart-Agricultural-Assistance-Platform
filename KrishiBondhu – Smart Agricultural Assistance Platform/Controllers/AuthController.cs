@@ -1,4 +1,5 @@
-﻿using KrishiBondhu___Smart_Agricultural_Assistance_Platform.Models;
+﻿
+using KrishiBondhu___Smart_Agricultural_Assistance_Platform.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,49 +15,140 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         }
 
         // =========================
-        // REGISTER
+        // REGISTER - GET
         // =========================
 
         [HttpGet]
         public IActionResult Register()
         {
-            return View();
+            return View(new RegisterViewModel());
         }
+
+        // =========================
+        // REGISTER - POST
+        // =========================
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
+            // Validate account type
+            if (model.AccountType != "User" &&
+                model.AccountType != "AgroFirm")
+            {
+                ModelState.AddModelError(
+                    "AccountType", "Invalid account type.");
+            }
+
+            // Validate Agro Firm information
+            if (model.AccountType == "AgroFirm")
+            {
+                if (string.IsNullOrWhiteSpace(model.FirmName))
+                    ModelState.AddModelError(
+                        "FirmName", "Firm name is required.");
+
+                if (string.IsNullOrWhiteSpace(model.OwnerName))
+                    ModelState.AddModelError(
+                        "OwnerName", "Owner name is required.");
+
+                if (string.IsNullOrWhiteSpace(model.Phone))
+                    ModelState.AddModelError(
+                        "Phone", "Phone number is required.");
+
+                if (string.IsNullOrWhiteSpace(model.Address))
+                    ModelState.AddModelError(
+                        "Address", "Address is required.");
+
+                if (model.BusinessType != "InputFirm" &&
+                    model.BusinessType != "ServiceFirm")
+                {
+                    ModelState.AddModelError(
+                        "BusinessType", "Select a valid business type.");
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
+            var username = model.Username.Trim();
+            var email = model.Email.Trim();
+
             var existingUser = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == model.Username);
+                .FirstOrDefaultAsync(u =>
+                    u.Username == username ||
+                    u.Email == email);
 
             if (existingUser != null)
             {
-                ModelState.AddModelError("Username", "Username already exists.");
+                ModelState.AddModelError(
+                    "",
+                    "Username or email already exists.");
+
                 return View(model);
             }
 
+            // Create the user account
             var user = new User
             {
-                Username = model.Username,
-                Email = model.Email,
+                Username = username,
+                Email = email,
                 Password = model.Password,
-                Role = "User"
+                Role = model.AccountType == "AgroFirm"
+                    ? "AgroFirm"
+                    : "User"
             };
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            await using var transaction =
+                await _context.Database.BeginTransactionAsync();
 
-            TempData["SuccessMessage"] = "Registration successful! Please login.";
+            try
+            {
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
 
-            return RedirectToAction("Login");
+                // Create Agro Firm profile
+                if (model.AccountType == "AgroFirm")
+                {
+                    var firm = new AgroFirm
+                    {
+                        FirmName = model.FirmName!.Trim(),
+                        OwnerName = model.OwnerName!.Trim(),
+                        Phone = model.Phone!.Trim(),
+                        Email = email,
+                        Address = model.Address!.Trim(),
+                        BusinessType = model.BusinessType!,
+                        Description = model.Description?.Trim(),
+                        CreatedAt = DateTime.UtcNow,
+                        IsActive = true
+                    };
+
+                    _context.Set<AgroFirm>().Add(firm);
+                    await _context.SaveChangesAsync();
+                }
+
+                await transaction.CommitAsync();
+
+                TempData["SuccessMessage"] =
+                    "Registration successful! Please login.";
+
+                return RedirectToAction(nameof(Login));
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+
+                System.Diagnostics.Debug.WriteLine(
+                    "Registration Error: " + ex);
+
+                ModelState.AddModelError(
+                    "",
+                    "Registration failed. Please try again.");
+
+                return View(model);
+            }
         }
-
 
         // =========================
         // LOGIN - GET
@@ -67,7 +159,6 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         {
             return View();
         }
-
 
         // =========================
         // LOGIN - POST
@@ -82,25 +173,33 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
                 return View(model);
             }
 
+            var username = model.Username.Trim();
+
             var user = await _context.Users
                 .FirstOrDefaultAsync(u =>
-                    u.Username == model.Username &&
+                    u.Username == username &&
                     u.Password == model.Password);
 
             if (user == null)
             {
-                ModelState.AddModelError("", "Invalid username or password.");
+                ModelState.AddModelError(
+                    "",
+                    "Invalid username or password.");
+
                 return View(model);
             }
 
-            // Store login information in Session
             HttpContext.Session.SetInt32("UserId", user.UserId);
             HttpContext.Session.SetString("Username", user.Username);
             HttpContext.Session.SetString("Role", user.Role);
 
+            if (user.Role == "AgroFirm")
+            {
+                return RedirectToAction("Dashboard", "AgroFirm");
+            }
+
             return RedirectToAction("Index", "Home");
         }
-
 
         // =========================
         // LOGOUT
@@ -109,15 +208,15 @@ namespace KrishiBondhu___Smart_Agricultural_Assistance_Platform.Controllers
         [HttpGet]
         public IActionResult Logout()
         {
-            // Clear all session data
             HttpContext.Session.Clear();
 
-            // Prevent browser from using cached protected pages
-            Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+            Response.Headers["Cache-Control"] =
+                "no-cache, no-store, must-revalidate";
+
             Response.Headers["Pragma"] = "no-cache";
             Response.Headers["Expires"] = "0";
 
-            return RedirectToAction("Login");
+            return RedirectToAction(nameof(Login));
         }
     }
 }

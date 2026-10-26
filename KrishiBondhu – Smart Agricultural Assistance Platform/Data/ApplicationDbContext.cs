@@ -1,4 +1,5 @@
-﻿using KrishiBondhu___Smart_Agricultural_Assistance_Platform.Models;
+﻿
+using KrishiBondhu___Smart_Agricultural_Assistance_Platform.Models;
 using Microsoft.EntityFrameworkCore;
 
 public class ApplicationDbContext : DbContext
@@ -23,6 +24,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<User> Users { get; set; }
 
     public DbSet<AuditLog> AuditLogs { get; set; }
+
+    // Agro Firm Management
+    public DbSet<AgroFirm> AgroFirms { get; set; }
+
+    public DbSet<AgroProductService> AgroProductServices { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
